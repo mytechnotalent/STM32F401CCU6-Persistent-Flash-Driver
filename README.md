@@ -152,7 +152,6 @@ Infinite_Loop:
 
 .align
 .end
-
 ```
 
 ## Schematic
