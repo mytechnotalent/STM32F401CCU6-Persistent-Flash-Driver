@@ -9,7 +9,7 @@ STM32F401CCU6 persistent flash driver.
 
 ## Code
 ```
-/***************************************************************************************************************
+/**********************************************************************************************************
  * MIT License
  *
  * Copyright (c) 2023 My Techno Talent
@@ -31,9 +31,9 @@ STM32F401CCU6 persistent flash driver.
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
- **************************************************************************************************************/
+ *********************************************************************************************************/
 
-/***************************************************************************************************************
+/**********************************************************************************************************
  * FILE: main.s
  *
  * DESCRIPTION:
@@ -47,9 +47,9 @@ STM32F401CCU6 persistent flash driver.
  * 1. Assemble and link the code using the STM32CubeIDE.
  * 2. Run or debug the binary using the STM32CubeIDE.
  *
- **************************************************************************************************************/
+ *********************************************************************************************************/
 
-/***************************************************************************************************************
+/**********************************************************************************************************
  * MEMORY ADDRESS DEFINITIONS
  *
  * DESCRIPTION:
@@ -73,14 +73,14 @@ STM32F401CCU6 persistent flash driver.
  *   the base address of the flash interface register block in your system.
  * - Verify the accuracy of the offsets used to define the specific register
  *   addresses (e.g., FLASH_KEYR, FLASH_OPTKEYR, FLASH_CR, FLASH_SR).
- **************************************************************************************************************/
+ *********************************************************************************************************/
 .equ FLASH_INTERFACE_REGISTER_BASE,                 0x40023C00
 .equ FLASH_KEYR,                                    FLASH_INTERFACE_REGISTER_BASE + 0x04
 .equ FLASH_OPTKEYR,                                 FLASH_INTERFACE_REGISTER_BASE + 0x08
 .equ FLASH_CR,                                      FLASH_INTERFACE_REGISTER_BASE + 0x10
 .equ FLASH_SR,                                      FLASH_INTERFACE_REGISTER_BASE + 0x0C
 
-/***************************************************************************************************************
+/**********************************************************************************************************
  * ASSEMBLY CONFIGURATION
  *
  * DESCRIPTION:
@@ -101,13 +101,13 @@ STM32F401CCU6 persistent flash driver.
  *   and capabilities.
  * - Adjust the instruction set (Thumb or ARM) based on the target system's
  *   instruction set support and requirements.
- **************************************************************************************************************/
+ *********************************************************************************************************/
 .syntax unified
 .cpu cortex-m4
 .fpu softvfp
 .thumb
 
-/***************************************************************************************************************
+/**********************************************************************************************************
  * TEXT SECTION DEFINITION
  *
  * DESCRIPTION:
@@ -126,10 +126,10 @@ STM32F401CCU6 persistent flash driver.
  * NOTES:
  * - Ensure that the subsequent code in the assembly file is intended to be
  *   part of the executable code and belongs to the ".text" section.
- **************************************************************************************************************/
+ *********************************************************************************************************/
 .section .text
 
-/***************************************************************************************************************
+/**********************************************************************************************************
  * GLOBAL SYMBOL DECLARATION
  *
  * DESCRIPTION:
@@ -151,11 +151,11 @@ STM32F401CCU6 persistent flash driver.
  *   implementation of the declared symbols.
  * - Verify that the names `Reset_Handler` and `__start` align with the intended
  *   entry points or function references in the system.
- **************************************************************************************************************/
+ *********************************************************************************************************/
 .global Reset_Handler
 .global __start
 
-/***************************************************************************************************************
+/**********************************************************************************************************
  * FUNCTION NAME: Reset_Handler
  *
  * DESCRIPTION:
@@ -182,12 +182,12 @@ STM32F401CCU6 persistent flash driver.
  * NOTES:
  * - This function assumes that the stack base (_estack) has been properly
  *   defined in the system.
- **************************************************************************************************************/
+ *********************************************************************************************************/
 Reset_Handler:
     ldr r0, =_estack                                // load the address of the _estack register into r0
     mov sp, r0                                      // set the stack pointer
 
-/***************************************************************************************************************
+/**********************************************************************************************************
  * FUNCTION NAME: __start
  *
  * DESCRIPTION:
@@ -219,7 +219,7 @@ Reset_Handler:
  * - The function relies on the existence and correctness of the called functions,
  *   such as Unlock_Flash, Erase_Sector_5_Flash, Verify_FLASH_SR_BSY_Bit_Cleared,
  *   Enable_Write_To_Flash, Write_To_Flash, Lock_Flash, and Infinite_Loop.
- **************************************************************************************************************/
+ *********************************************************************************************************/
 __start:
     bl Unlock_Flash                                 // call the Unlock_Flash function
 
@@ -239,7 +239,7 @@ __start:
 
     bl Infinite_Loop                                // call the Infinite_Loop function
 
-/***************************************************************************************************************
+/**********************************************************************************************************
  * FUNCTION NAME: Unlock_Flash
  *
  * DESCRIPTION:
@@ -266,7 +266,7 @@ __start:
  * - This function assumes that the necessary flash unlocking sequences and
  *   permissions have been correctly configured in the system.
  * - The function saves and restores the state of registers r1-r12 and lr.
- **************************************************************************************************************/
+ *********************************************************************************************************/
 Unlock_Flash:
     push {r1-r12, lr}                               // save register state
     ldr r0, =FLASH_KEYR                             // load the address of the FLASH_KEYR register into r0
@@ -282,7 +282,7 @@ Unlock_Flash:
     pop {r1-r12, lr}                                // repopulate register state
     bx lr                                           // return to caller
 
-/***************************************************************************************************************
+/**********************************************************************************************************
  * FUNCTION NAME: Erase_Sector_5_Flash
  *
  * DESCRIPTION:
@@ -308,7 +308,7 @@ Unlock_Flash:
  * - This function assumes that the necessary flash erasure sequences and
  *   permissions have been correctly configured in the system.
  * - The function saves and restores the state of registers r1-r12 and lr.
- **************************************************************************************************************/
+ *********************************************************************************************************/
 Erase_Sector_5_Flash:
     push {r1-r12, lr}                               // save register state
     ldr r0, =FLASH_CR                               // load the address of the FLASH_CR register into r0
@@ -321,7 +321,7 @@ Erase_Sector_5_Flash:
     pop {r1-r12, lr}                                // repopulate register state
     bx lr                                           // return to caller
 
-/***************************************************************************************************************
+/**********************************************************************************************************
  * FUNCTION NAME: Verify_FLASH_SR_BSY_Bit_Cleared
  *
  * DESCRIPTION:
@@ -349,7 +349,7 @@ Erase_Sector_5_Flash:
  * - This function assumes that the FLASH_SR register has been correctly
  *   configured in the system.
  * - The function saves and restores the state of registers r1-r12 and lr.
- **************************************************************************************************************/
+ *********************************************************************************************************/
 Verify_FLASH_SR_BSY_Bit_Cleared:
     push {r1-r12,lr}                                // save register state
     ldr r0, =FLASH_SR                               // load the address of the FLASH_SR register into r0
@@ -359,7 +359,7 @@ Verify_FLASH_SR_BSY_Bit_Cleared:
     pop {r1-r12,lr}                                 // repopulate register state
     bx lr                                           // return to caller
 
-/***************************************************************************************************************
+/**********************************************************************************************************
  * FUNCTION NAME: Enable_Write_To_Flash
  *
  * DESCRIPTION:
@@ -385,7 +385,7 @@ Verify_FLASH_SR_BSY_Bit_Cleared:
  * - This function assumes that the necessary flash write enable sequences and
  *   permissions have been correctly configured in the system.
  * - The function saves and restores the state of registers r1-r12 and lr.
- **************************************************************************************************************/
+ *********************************************************************************************************/
 Enable_Write_To_Flash:
     push {r1-r12,lr}                                // save register state
     ldr r0, =FLASH_CR                               // load the address of the FLASH_CR register into r0
@@ -397,7 +397,7 @@ Enable_Write_To_Flash:
     pop {r1-r12,lr}                                 // repopulate register state
     bx lr                                           // return to caller
 
-/***************************************************************************************************************
+/**********************************************************************************************************
  * FUNCTION NAME: Write_To_Flash
  *
  * DESCRIPTION:
@@ -417,8 +417,8 @@ Enable_Write_To_Flash:
  * RETURNS:
  * None
  *
- * AUTHOR: [Your Name]
- * DATE: [Current Date]
+ * AUTHOR: Kevin Thomas
+ * DATE: July 2, 2023
  *
  * USAGE:
  * Call this function to write a specified data value into a target address within
@@ -430,14 +430,14 @@ Enable_Write_To_Flash:
  *   flash memory and that the flash write operations have been properly configured
  *   and enabled in the system.
  * - The function saves and restores the state of registers r1-r12 and lr.
- **************************************************************************************************************/
+ *********************************************************************************************************/
 Write_To_Flash:
     push {r1-r12,lr}                                // save register state
     str r1, [r0]                                    // store data into the sector 5 address
     pop {r1-r12,lr}                                 // repopulate register state
     bx lr                                           // return to caller
 
-/***************************************************************************************************************
+/**********************************************************************************************************
  * FUNCTION NAME: Lock_Flash
  *
  * DESCRIPTION:
@@ -463,8 +463,7 @@ Write_To_Flash:
  * - This function assumes that the necessary flash locking sequences and
  *   permissions have been correctly configured in the system.
  * - The function saves and restores the state of registers r1-r12 and lr.
- **************************************************************************************************************/
-
+ *********************************************************************************************************/
 Lock_Flash:
     push {r1-r12,lr}                                // save register state
     ldr r0, =FLASH_CR                               // load the address of the FLASH_CR register into r0
@@ -474,7 +473,7 @@ Lock_Flash:
     pop {r1-r12,lr}                                 // repopulate register state
     bx lr                                           // return to caller
 
-/***************************************************************************************************************
+/**********************************************************************************************************
  * FUNCTION NAME: Infinite_Loop
  *
  * DESCRIPTION:
@@ -504,11 +503,11 @@ Lock_Flash:
  *   and will only exit or terminate if an external interrupt or reset event occurs.
  * - Ensure that proper interrupt handling and reset mechanisms are in place to
  *   prevent the program from being stuck in this infinite loop indefinitely.
- **************************************************************************************************************/
+ *********************************************************************************************************/
 Infinite_Loop:
     b Infinite_Loop                                 // infinite loop
 
-/***************************************************************************************************************
+/**********************************************************************************************************
  * DATA SECTION DEFINITION
  *
  * DESCRIPTION:
@@ -530,10 +529,10 @@ Infinite_Loop:
  * - Ensure that the subsequent data declarations in the assembly file are
  *   intended to be part of the initialized data section and belong to the
  *   ".data" section.
- **************************************************************************************************************/
+ *********************************************************************************************************/
 .section .data
 
-/***************************************************************************************************************
+/**********************************************************************************************************
  * BSS SECTION DEFINITION
  *
  * DESCRIPTION:
@@ -555,10 +554,10 @@ Infinite_Loop:
  * - Ensure that the subsequent variable declarations in the assembly file are
  *   intended to be part of the uninitialized or zero-initialized data and
  *   belong to the ".bss" section.
- **************************************************************************************************************/
+ *********************************************************************************************************/
 .section .bss
 
-/***************************************************************************************************************
+/**********************************************************************************************************
  * ALIGN AND END DIRECTIVES
  *
  * DESCRIPTION:
@@ -580,7 +579,7 @@ Infinite_Loop:
  *   requirements.
  * - Ensure that the `.end` directive is placed at the end of the assembly file.
  * - Additional directives or code can be added after the `.end` directive.
- **************************************************************************************************************/
+ *********************************************************************************************************/
 .align
 .end
 ```
