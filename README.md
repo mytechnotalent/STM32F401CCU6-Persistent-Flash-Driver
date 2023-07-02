@@ -269,16 +269,16 @@ __start:
  *********************************************************************************************************/
 Unlock_Flash:
     push {r1-r12, lr}                               // save register state
-    ldr r0, =FLASH_KEYR                             // load the address of the FLASH_KEYR register into r0
-    ldr r1, =0x45670123                             // KEY1 value
-    ldr r2, =0xCDEF89AB                             // KEY2 value
+    ldr r0, =FLASH_KEYR                             // load address of the FLASH_KEYR register into r0
+    ldr r1, =0x45670123                             // load KEY1 value inside FLASH_KEYR into r1
+    ldr r2, =0xCDEF89AB                             // load KEY2 value inside FLASH_KEYR into r2
     str r1, [r0]                                    // store the value into the FLASH_KEYR register
     str r2, [r0]                                    // store the value into the FLASH_KEYR register
-    ldr r0, =FLASH_OPTKEYR                          // load the address of the FLASH_OPTKEYR register into r0
-    ldr r1, =0x08192A3B                             // OPTKEY1 value
-    ldr r2, =0x4C5D6E7F                             // OPTKEY2 value
-    str r1, [r0]                                    // store the value into the FLASH_OPTKEYR register
-    str r2, [r0]                                    // store the value into the FLASH_OPTKEYR register
+    ldr r0, =FLASH_OPTKEYR                          // load address of the FLASH_OPTKEYR register into r0
+    ldr r1, =0x08192A3B                             // load OPTKEY1 value inside FLASH_OPTKEYR into r1
+    ldr r2, =0x4C5D6E7F                             // load OPTKEY2 value inside FLASH_OPTKEYR into r2
+    str r1, [r0]                                    // store value into the FLASH_OPTKEYR register
+    str r2, [r0]                                    // store value into the FLASH_OPTKEYR register
     pop {r1-r12, lr}                                // repopulate register state
     bx lr                                           // return to caller
 
@@ -311,13 +311,13 @@ Unlock_Flash:
  *********************************************************************************************************/
 Erase_Sector_5_Flash:
     push {r1-r12, lr}                               // save register state
-    ldr r0, =FLASH_CR                               // load the address of the FLASH_CR register into r0
-    ldr r1, [r0]                                    // load the value inside FLASH_CR into r1
+    ldr r0, =FLASH_CR                               // load address of the FLASH_CR register into r0
+    ldr r1, [r0]                                    // load value inside FLASH_CR into r1
     orr r1, r1, #0b00000000000000010000000000000000 // set the STRT bit
     orr r1, r1, #0b00000000000000000000000000100000 // set the SNB higher bit, sector 5
     orr r1, r1, #0b00000000000000000000000000001000 // set the SNB lower bit, sector 5
     orr r1, r1, #0b00000000000000000000000000000010 // set the SER bit
-    str r1, [r0]                                    // store the value into the FLASH_CR register
+    str r1, [r0]                                    // store value into the FLASH_CR register
     pop {r1-r12, lr}                                // repopulate register state
     bx lr                                           // return to caller
 
@@ -352,8 +352,8 @@ Erase_Sector_5_Flash:
  *********************************************************************************************************/
 Verify_FLASH_SR_BSY_Bit_Cleared:
     push {r1-r12,lr}                                // save register state
-    ldr r0, =FLASH_SR                               // load the address of the FLASH_SR register into r0
-    ldr r1, [R0]                                    // load the value inside FLASH_SR into r1
+    ldr r0, =FLASH_SR                               // load address of the FLASH_SR register into r0
+    ldr r1, [R0]                                    // load value inside FLASH_SR into r1
     tst r1, #0b00000000000000010000000000000000     // test the BSY bit
     bne Verify_FLASH_SR_BSY_Bit_Cleared             // branch back if BSY bit is still 1
     pop {r1-r12,lr}                                 // repopulate register state
@@ -388,12 +388,12 @@ Verify_FLASH_SR_BSY_Bit_Cleared:
  *********************************************************************************************************/
 Enable_Write_To_Flash:
     push {r1-r12,lr}                                // save register state
-    ldr r0, =FLASH_CR                               // load the address of the FLASH_CR register into r0
-    ldr r1, [R0]                                    // load the value inside FLASH_CR into r1
+    ldr r0, =FLASH_CR                               // load address of the FLASH_CR register into r0
+    ldr r1, [R0]                                    // load value inside FLASH_CR into r1
     orr r1, r1, #0b00000000000000000000000000000001 // set the PG bit
     orr r1, r1, #0b00000000000000000000001000000000 // set the PSIZE highter bit, program x32
     bic r1, r1, #0b00000000000000000000000100000000 // clear the PSIZE lower bit, program x32
-    str r1, [r0]                                    // store the value into the FLASH_CR register
+    str r1, [r0]                                    // store value into the FLASH_CR register
     pop {r1-r12,lr}                                 // repopulate register state
     bx lr                                           // return to caller
 
@@ -466,10 +466,10 @@ Write_To_Flash:
  *********************************************************************************************************/
 Lock_Flash:
     push {r1-r12,lr}                                // save register state
-    ldr r0, =FLASH_CR                               // load the address of the FLASH_CR register into r0
-    ldr r1, [r0]                                    // load the value inside FLASH_CR into r1
+    ldr r0, =FLASH_CR                               // load address of the FLASH_CR register into r0
+    ldr r1, [r0]                                    // load value inside FLASH_CR into r1
     mov r1, #0b10000000000000000000000000000000     // set the LOCK bit and clear everything else
-    str r1, [r0]                                    // store the value into the FLASH_CR register
+    str r1, [r0]                                    // store value into the FLASH_CR register
     pop {r1-r12,lr}                                 // repopulate register state
     bx lr                                           // return to caller
 
