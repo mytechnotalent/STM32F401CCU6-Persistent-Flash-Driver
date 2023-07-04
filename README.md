@@ -8,7 +8,7 @@
 STM32F401CCU6 persistent flash driver.
 
 ## Code
-```asm
+```
 ;------------------------------------------------------------------------------------------
 ; MIT License
 ;
@@ -46,13 +46,13 @@ STM32F401CCU6 persistent flash driver.
 ; 1. Assemble and link the code using the Keil.
 ; 2. Run or debug the binary using the Keil.
 ;------------------------------------------------------------------------------------------
-Stack_Size		EQU     0x00000400
+Stack_Size      EQU     0x00000400
 
-				AREA    STACK, NOINIT, READWRITE, ALIGN=3
+                AREA    STACK, NOINIT, READWRITE, ALIGN=3
 Stack_Mem       SPACE   Stack_Size
 __initial_sp
-				PRESERVE8
-				THUMB
+                PRESERVE8
+                THUMB
 
                 AREA    RESET, DATA, READONLY
                 EXPORT  __Vectors
@@ -154,12 +154,12 @@ __Vectors       DCD     __initial_sp                      ; Top of Stack
                 DCD     0                                 ; Reserved                         
                 DCD     0                                 ; Reserved                                    
                 DCD     0                                 ; Reserved  
-                DCD     0                                 ; Reserved				                              
+                DCD     0                                 ; Reserved                                                  
                 DCD     0                                 ; Reserved
                 DCD     FPU_IRQHandler                    ; FPU
                 DCD     0                                 ; Reserved
-				DCD     0                                 ; Reserved
-				DCD     SPI4_IRQHandler                   ; SPI4                                    
+                DCD     0                                 ; Reserved
+                DCD     SPI4_IRQHandler                   ; SPI4                                    
 __Vectors_End
 
 __Vectors_Size  EQU  __Vectors_End - __Vectors
@@ -168,7 +168,7 @@ __Vectors_Size  EQU  __Vectors_End - __Vectors
 
 Reset_Handler   PROC
                 EXPORT  Reset_Handler                     [WEAK]
-			    LDR     R0, =__start
+                LDR     R0, =__start
                 BX      R0
 ;------------------------------------------------------------------------------------------
 __start
@@ -187,9 +187,9 @@ __start
                 BL      Verify_FLASH_SR_BSY_Bit_Cleared   ; call the Verify_FLASH_SR_BSY_Bit_Cleared function
 
                 BL      Lock_Flash                        ; call the Lock_Flash function
-				
+                    
                 BL      Infinite_Loop                     ; call the Infinite_Loop function
-;------------------------------------------------------------------------------------------				
+;------------------------------------------------------------------------------------------                    
 Unlock_Flash
                 PUSH    {R1-R12, LR}                      ; save register state
                 LDR     R0, =0x40023C04                   ; load address of the FLASH_KEYR register
@@ -238,7 +238,7 @@ Write_To_Flash
                 POP     {R1-R12, LR}                      ; repopulate register state
                 BX      LR                                ; return to caller
 
-Lock_Flash				
+Lock_Flash                    
                 PUSH    {R1-R12, LR}                      ; save register state
                 LDR     R0, =0x40023C10                   ; load address of the FLASH_CR register
                 LDR     R1, [R0]                          ; load value inside FLASH_CR
@@ -247,12 +247,12 @@ Lock_Flash
                 BX      LR                                ; return to caller
 
 Infinite_Loop
-                B       .		
+                B       .          
 ;------------------------------------------------------------------------------------------
                 ENDP 
                 ALIGN
                 LTORG
-;------------------------------------------------------------------------------------------		
+;------------------------------------------------------------------------------------------          
 NMI_Handler\
                 PROC
                 EXPORT  NMI_Handler                       [WEAK]
@@ -355,7 +355,7 @@ Default_Handler\
                 EXPORT  DMA2_Stream1_IRQHandler           [WEAK]                                   
                 EXPORT  DMA2_Stream2_IRQHandler           [WEAK]                                    
                 EXPORT  DMA2_Stream3_IRQHandler           [WEAK]                                    
-                EXPORT  DMA2_Stream4_IRQHandler           [WEAK]                                                                                                     
+                EXPORT  DMA2_Stream4_IRQHandler           [WEAK]                                                                                                   
                 EXPORT  OTG_FS_IRQHandler                 [WEAK]                                       
                 EXPORT  DMA2_Stream5_IRQHandler           [WEAK]                                   
                 EXPORT  DMA2_Stream6_IRQHandler           [WEAK]                                   
@@ -364,7 +364,7 @@ Default_Handler\
                 EXPORT  I2C3_EV_IRQHandler                [WEAK]                                              
                 EXPORT  I2C3_ER_IRQHandler                [WEAK]                                              
                 EXPORT  FPU_IRQHandler                    [WEAK]
-			    EXPORT  SPI4_IRQHandler                   [WEAK]
+                EXPORT  SPI4_IRQHandler                   [WEAK]
           
 WWDG_IRQHandler                                                       
 
@@ -478,12 +478,12 @@ FPU_IRQHandler
 
 SPI4_IRQHandler
                 
-				B       .
+                B     .
 
                 ENDP
                 ALIGN
 ;------------------------------------------------------------------------------------------
-				END
+                END
 ;------------------------------------------------------------------------------------------
 ```
 
