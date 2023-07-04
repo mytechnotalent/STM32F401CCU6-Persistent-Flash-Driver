@@ -8,580 +8,483 @@
 STM32F401CCU6 persistent flash driver.
 
 ## Code
-```
-/**********************************************************************************************************
- * MIT License
- *
- * Copyright (c) 2023 My Techno Talent
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- *********************************************************************************************************/
+```asm
+;------------------------------------------------------------------------------------------
+; MIT License
+;
+; Copyright (c) 2023 My Techno Talent
+;
+; Permission is hereby granted, free of charge, to any person obtaining a copy
+; of this software and associated documentation files (the "Software"), to deal
+; in the Software without restriction, including without limitation the rights
+; to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+; copies of the Software, and to permit persons to whom the Software is
+; furnished to do so, subject to the following conditions:
+;
+; The above copyright notice and this permission notice shall be included in all
+; copies or substantial portions of the Software.
+;
+; THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+; IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+; FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+; AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+; LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+; OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+; SOFTWARE.
+;------------------------------------------------------------------------------------------
+; FILE: main.s
+;
+; DESCRIPTION:
+; This file contains the assembly code for a program that creates persistent storage
+; using the onboard flash utilizing the STM32F401CC6 microcontroller.
+; 
+; AUTHOR: Kevin Thomas
+; DATE CREATED: July 4, 2023
+; DATE UPDATED: July 4, 2023
+; 
+; USAGE:
+; 1. Assemble and link the code using the Keil.
+; 2. Run or debug the binary using the Keil.
+;------------------------------------------------------------------------------------------
+Stack_Size		EQU     0x00000400
 
-/**********************************************************************************************************
- * FILE: main.s
- *
- * DESCRIPTION:
- * This file contains the assembly code for a program that creates persistent storage
- * using the onboard flash utilizing the STM32F401CC6 microcontroller.
- *
- * AUTHOR: Kevin Thomas
- * DATE: July 2, 2023
- *
- * USAGE:
- * 1. Assemble and link the code using the STM32CubeIDE.
- * 2. Run or debug the binary using the STM32CubeIDE.
- *
- *********************************************************************************************************/
+				AREA    STACK, NOINIT, READWRITE, ALIGN=3
+Stack_Mem       SPACE   Stack_Size
+__initial_sp
+				PRESERVE8
+				THUMB
 
-/**********************************************************************************************************
- * MEMORY ADDRESS DEFINITIONS
- *
- * DESCRIPTION:
- * This code block defines memory address constants related to the flash memory
- * interface registers. It includes addresses such as FLASH_KEYR, FLASH_OPTKEYR,
- * FLASH_CR, and FLASH_SR. These constants represent the base address of the flash
- * interface register block (FLASH_INTERFACE_REGISTER_BASE) plus specific offsets
- * for each register.
- *
- * USAGE:
- * The memory address constants defined in this code block can be used to access
- * and manipulate the flash interface registers in the system. They provide an
- * abstraction layer for the memory addresses, making the code more readable and
- * maintainable.
- *
- * AUTHOR: Kevin Thomas
- * DATE: July 2, 2023
- *
- * NOTES:
- * - Ensure that the FLASH_INTERFACE_REGISTER_BASE constant is correctly set to
- *   the base address of the flash interface register block in your system.
- * - Verify the accuracy of the offsets used to define the specific register
- *   addresses (e.g., FLASH_KEYR, FLASH_OPTKEYR, FLASH_CR, FLASH_SR).
- *********************************************************************************************************/
-.equ FLASH_INTERFACE_REGISTER_BASE,                 0x40023C00
-.equ FLASH_KEYR,                                    FLASH_INTERFACE_REGISTER_BASE + 0x04
-.equ FLASH_OPTKEYR,                                 FLASH_INTERFACE_REGISTER_BASE + 0x08
-.equ FLASH_CR,                                      FLASH_INTERFACE_REGISTER_BASE + 0x10
-.equ FLASH_SR,                                      FLASH_INTERFACE_REGISTER_BASE + 0x0C
+                AREA    RESET, DATA, READONLY
+                EXPORT  __Vectors
+                EXPORT  __Vectors_End
+                EXPORT  __Vectors_Size
 
-/**********************************************************************************************************
- * ASSEMBLY CONFIGURATION
- *
- * DESCRIPTION:
- * This assembly code block sets the configuration for the assembly language.
- * It specifies the syntax as unified, the CPU as Cortex-M4, the FPU as SoftVFP,
- * and the instruction set as Thumb. These settings determine how the assembly
- * code is written, compiled, and executed by the target system.
- *
- * USAGE:
- * Include this code block at the beginning of the assembly file to configure
- * the assembly language settings according to the specific system requirements.
- *
- * AUTHOR: Kevin Thomas
- * DATE: July 2, 2023
- *
- * NOTES:
- * - Verify that the specified CPU and FPU match the target system's architecture
- *   and capabilities.
- * - Adjust the instruction set (Thumb or ARM) based on the target system's
- *   instruction set support and requirements.
- *********************************************************************************************************/
-.syntax unified
-.cpu cortex-m4
-.fpu softvfp
-.thumb
+__Vectors       DCD     __initial_sp                      ; Top of Stack
+                DCD     Reset_Handler                     ; Reset Handler
+                DCD     NMI_Handler                       ; NMI Handler
+                DCD     HardFault_Handler                 ; Hard Fault Handler
+                DCD     MemManage_Handler                 ; MPU Fault Handler
+                DCD     BusFault_Handler                  ; Bus Fault Handler
+                DCD     UsageFault_Handler                ; Usage Fault Handler
+                DCD     0                                 ; Reserved
+                DCD     0                                 ; Reserved
+                DCD     0                                 ; Reserved
+                DCD     0                                 ; Reserved
+                DCD     SVC_Handler                       ; SVCall Handler
+                DCD     DebugMon_Handler                  ; Debug Monitor Handler
+                DCD     0                                 ; Reserved
+                DCD     PendSV_Handler                    ; PendSV Handler
+                DCD     SysTick_Handler                   ; SysTick Handler
+                DCD     WWDG_IRQHandler                   ; Window WatchDog                                        
+                DCD     PVD_IRQHandler                    ; PVD through EXTI Line detection                        
+                DCD     TAMP_STAMP_IRQHandler             ; Tamper and TimeStamps through the EXTI line            
+                DCD     RTC_WKUP_IRQHandler               ; RTC Wakeup through the EXTI line                       
+                DCD     FLASH_IRQHandler                  ; FLASH                                           
+                DCD     RCC_IRQHandler                    ; RCC                                             
+                DCD     EXTI0_IRQHandler                  ; EXTI Line0                                             
+                DCD     EXTI1_IRQHandler                  ; EXTI Line1                                             
+                DCD     EXTI2_IRQHandler                  ; EXTI Line2                                             
+                DCD     EXTI3_IRQHandler                  ; EXTI Line3                                             
+                DCD     EXTI4_IRQHandler                  ; EXTI Line4                                             
+                DCD     DMA1_Stream0_IRQHandler           ; DMA1 Stream 0                                   
+                DCD     DMA1_Stream1_IRQHandler           ; DMA1 Stream 1                                   
+                DCD     DMA1_Stream2_IRQHandler           ; DMA1 Stream 2                                   
+                DCD     DMA1_Stream3_IRQHandler           ; DMA1 Stream 3                                   
+                DCD     DMA1_Stream4_IRQHandler           ; DMA1 Stream 4                                   
+                DCD     DMA1_Stream5_IRQHandler           ; DMA1 Stream 5                                   
+                DCD     DMA1_Stream6_IRQHandler           ; DMA1 Stream 6                                   
+                DCD     ADC_IRQHandler                    ; ADC1, ADC2 and ADC3s                            
+                DCD     0                                 ; Reserved                                                
+                DCD     0                                 ; Reserved                                               
+                DCD     0                                 ; Reserved                                             
+                DCD     0                                 ; Reserved                                               
+                DCD     EXTI9_5_IRQHandler                ; External Line[9:5]s                                    
+                DCD     TIM1_BRK_TIM9_IRQHandler          ; TIM1 Break and TIM9                   
+                DCD     TIM1_UP_TIM10_IRQHandler          ; TIM1 Update and TIM10                 
+                DCD     TIM1_TRG_COM_TIM11_IRQHandler     ; TIM1 Trigger and Commutation and TIM11
+                DCD     TIM1_CC_IRQHandler                ; TIM1 Capture Compare                                   
+                DCD     TIM2_IRQHandler                   ; TIM2                                            
+                DCD     TIM3_IRQHandler                   ; TIM3                                            
+                DCD     TIM4_IRQHandler                   ; TIM4                                            
+                DCD     I2C1_EV_IRQHandler                ; I2C1 Event                                             
+                DCD     I2C1_ER_IRQHandler                ; I2C1 Error                                             
+                DCD     I2C2_EV_IRQHandler                ; I2C2 Event                                             
+                DCD     I2C2_ER_IRQHandler                ; I2C2 Error                                               
+                DCD     SPI1_IRQHandler                   ; SPI1                                            
+                DCD     SPI2_IRQHandler                   ; SPI2                                            
+                DCD     USART1_IRQHandler                 ; USART1                                          
+                DCD     USART2_IRQHandler                 ; USART2                                          
+                DCD     0                                 ; Reserved                                          
+                DCD     EXTI15_10_IRQHandler              ; External Line[15:10]s                                  
+                DCD     RTC_Alarm_IRQHandler              ; RTC Alarm (A and B) through EXTI Line                  
+                DCD     OTG_FS_WKUP_IRQHandler            ; USB OTG FS Wakeup through EXTI line                        
+                DCD     0                                 ; Reserved                  
+                DCD     0                                 ; Reserved                 
+                DCD     0                                 ; Reserved
+                DCD     0                                 ; Reserved                                   
+                DCD     DMA1_Stream7_IRQHandler           ; DMA1 Stream7                                           
+                DCD     0                                 ; Reserved                                             
+                DCD     SDIO_IRQHandler                   ; SDIO                                            
+                DCD     TIM5_IRQHandler                   ; TIM5                                            
+                DCD     SPI3_IRQHandler                   ; SPI3                                            
+                DCD     0                                 ; Reserved                                           
+                DCD     0                                 ; Reserved                                           
+                DCD     0                                 ; Reserved                   
+                DCD     0                                 ; Reserved                   
+                DCD     DMA2_Stream0_IRQHandler           ; DMA2 Stream 0                                   
+                DCD     DMA2_Stream1_IRQHandler           ; DMA2 Stream 1                                   
+                DCD     DMA2_Stream2_IRQHandler           ; DMA2 Stream 2                                   
+                DCD     DMA2_Stream3_IRQHandler           ; DMA2 Stream 3                                   
+                DCD     DMA2_Stream4_IRQHandler           ; DMA2 Stream 4
+                DCD     0                                 ; Reserved  
+                DCD     0                                 ; Reserved  
+                DCD     0                                 ; Reserved                                              
+                DCD     0                                 ; Reserved                                               
+                DCD     0                                 ; Reserved                                               
+                DCD     0                                 ; Reserved                                               
+                DCD     OTG_FS_IRQHandler                 ; USB OTG FS                                      
+                DCD     DMA2_Stream5_IRQHandler           ; DMA2 Stream 5                                   
+                DCD     DMA2_Stream6_IRQHandler           ; DMA2 Stream 6                                   
+                DCD     DMA2_Stream7_IRQHandler           ; DMA2 Stream 7                                   
+                DCD     USART6_IRQHandler                 ; USART6                                           
+                DCD     I2C3_EV_IRQHandler                ; I2C3 event                                             
+                DCD     I2C3_ER_IRQHandler                ; I2C3 error                                             
+                DCD     0                                 ; Reserved                     
+                DCD     0                                 ; Reserved                       
+                DCD     0                                 ; Reserved                         
+                DCD     0                                 ; Reserved                                    
+                DCD     0                                 ; Reserved  
+                DCD     0                                 ; Reserved				                              
+                DCD     0                                 ; Reserved
+                DCD     FPU_IRQHandler                    ; FPU
+                DCD     0                                 ; Reserved
+				DCD     0                                 ; Reserved
+				DCD     SPI4_IRQHandler                   ; SPI4                                    
+__Vectors_End
 
-/**********************************************************************************************************
- * TEXT SECTION DEFINITION
- *
- * DESCRIPTION:
- * This assembly code block defines the section as ".text". The ".text" section
- * is commonly used to store the executable code of a program or application.
- * It contains the instructions that the processor executes when the program is
- * running.
- *
- * USAGE:
- * Include this code block in the assembly file to specify that the following
- * code should be placed in the ".text" section of the compiled binary.
- *
- * AUTHOR: Kevin Thomas
- * DATE: July 2, 2023
- *
- * NOTES:
- * - Ensure that the subsequent code in the assembly file is intended to be
- *   part of the executable code and belongs to the ".text" section.
- *********************************************************************************************************/
-.section .text
+__Vectors_Size  EQU  __Vectors_End - __Vectors
 
-/**********************************************************************************************************
- * GLOBAL SYMBOL DECLARATION
- *
- * DESCRIPTION:
- * This assembly code block declares the global symbols `Reset_Handler` and
- * `__start`. Global symbols are labels that can be accessed from other modules
- * or files. These symbols are commonly used in embedded systems and serve as
- * entry points or important function references.
- *
- * USAGE:
- * Include this code block in the assembly file to declare the `Reset_Handler`
- * and `__start` symbols as global. This allows other modules or files to refer
- * to these symbols and utilize their functionality.
- *
- * AUTHOR: Kevin Thomas
- * DATE: July 2, 2023
- *
- * NOTES:
- * - Ensure that the subsequent code in the assembly file defines the actual
- *   implementation of the declared symbols.
- * - Verify that the names `Reset_Handler` and `__start` align with the intended
- *   entry points or function references in the system.
- *********************************************************************************************************/
-.global Reset_Handler
-.global __start
+                AREA    |.text|, CODE, READONLY
 
-/**********************************************************************************************************
- * FUNCTION NAME: Reset_Handler
- *
- * DESCRIPTION:
- * This function is the reset handler, which is called when the microcontroller
- * starts up or resets. It initializes the stack pointer (SP) to the address of
- * the stack base, denoted by the symbol _estack.
- *
- * INPUTS:
- * None
- *
- * OUTPUTS:
- * None
- *
- * RETURNS:
- * None
- *
- * AUTHOR: Kevin Thomas
- * DATE: July 2, 2023
- *
- * USAGE:
- * This function is automatically called at startup or after a reset. It should
- * not be called explicitly in user code.
- *
- * NOTES:
- * - This function assumes that the stack base (_estack) has been properly
- *   defined in the system.
- *********************************************************************************************************/
-Reset_Handler:
-    ldr r0, =_estack                                // load the address of the _estack register into r0
-    mov sp, r0                                      // set the stack pointer
+Reset_Handler   PROC
+                EXPORT  Reset_Handler                     [WEAK]
+			    LDR     R0, =__start
+                BX      R0
+;------------------------------------------------------------------------------------------
+__start
+                BL      Unlock_Flash                      ; call the Unlock_Flash function
 
-/**********************************************************************************************************
- * FUNCTION NAME: __start
- *
- * DESCRIPTION:
- * This function is the entry point of the program. It performs a series of flash
- * memory operations, including unlocking, erasing, writing, and locking. It also
- * verifies the status of the flash memory before and after each operation.
- *
- * INPUTS:
- * None
- *
- * OUTPUTS:
- * None
- *
- * RETURNS:
- * None
- *
- * AUTHOR: Kevin Thomas
- * DATE: July 2, 2023
- *
- * USAGE:
- * The "__start" function serves as the entry point of the program and is
- * automatically called at startup. It initializes the flash memory and performs
- * a series of flash operations. This function should not be explicitly called
- * within user code.
- *
- * NOTES:
- * - This function assumes that the necessary flash control sequences and
- *   permissions have been properly configured in the system.
- * - The function relies on the existence and correctness of the called functions,
- *   such as Unlock_Flash, Erase_Sector_5_Flash, Verify_FLASH_SR_BSY_Bit_Cleared,
- *   Enable_Write_To_Flash, Write_To_Flash, Lock_Flash, and Infinite_Loop.
- *********************************************************************************************************/
-__start:
-    bl Unlock_Flash                                 // call the Unlock_Flash function
+                BL      Erase_Sector_5_Flash              ; call the Erase_Sector_5_Flash function
 
-    bl Erase_Sector_5_Flash                         // call the Erase_Sector_5_Flash function
+                BL      Verify_FLASH_SR_BSY_Bit_Cleared   ; call the Verify_FLASH_SR_BSY_Bit_Cleared funtion
 
-    bl Verify_FLASH_SR_BSY_Bit_Cleared              // call the Verify_FLASH_SR_BSY_Bit_Cleared funtion
+                BL      Enable_Write_To_Flash             ; call the Enable_Write_To_Flash function
 
-    bl Enable_Write_To_Flash                        // call the Enable_Write_To_Flash function
+                LDR     R0, =0x0803FFFC                   ; address to write to within sector 5 flash  
+                LDR     R1, =0xDEADBEEF                   ; data to write into the sector 5 addres
+                BL      Write_To_Flash                    ; call the Write_To_Flash function
 
-    ldr r0, =0x0803FFFC                             // address to write to within sector 5 flash
-    ldr r1, =0xDEADBEEF                             // data to write into the sector 5 address
-    bl Write_To_Flash                               // call the Write_To_Flash function
+                BL      Verify_FLASH_SR_BSY_Bit_Cleared   ; call the Verify_FLASH_SR_BSY_Bit_Cleared function
 
-    bl Verify_FLASH_SR_BSY_Bit_Cleared              // call the Verify_FLASH_SR_BSY_Bit_Cleared function
+                BL      Lock_Flash                        ; call the Lock_Flash function
+				
+                BL      Infinite_Loop                     ; call the Infinite_Loop function
+;------------------------------------------------------------------------------------------				
+Unlock_Flash
+                PUSH    {R1-R12, LR}                      ; save register state
+                LDR     R0, =0x40023C04                   ; load address of the FLASH_KEYR register
+                LDR     R1, =0x45670123                   ; load value inside FLASH_KEYR
+                LDR     R2, =0xCDEF89AB                   ; load value inside FLASH_KEYR
+                STR     R1, [R0]                          ; store the value into the FLASH_KEYR register
+                STR     R2, [R0]                          ; store the value into the FLASH_KEYR register 
+                POP     {R1-R12, LR}                      ; repopulate register state
+                BX      LR                                ; return to caller
 
-    bl Lock_Flash                                   // call the Lock_Flash function
+Erase_Sector_5_Flash
+                PUSH    {R1-R12, LR}                      ; save register state
+                LDR     R0, =0x40023C10                   ; load address of the FLASH_CR register
+                LDR     R1, [R0]                          ; load value inside FLASH_CR
+                ORR     R1, #1<<16                        ; set the STRT bit
+                ORR     R1, #1<<5                         ; set the SNB bit, sector 5
+                ORR     R1, #1<<3                         ; set the SNB bit, sector 5
+                ORR     R1, #1<<1                         ; set the SER bit
+                STR     R1, [R0]                          ; store value into the FLASH_CR register
+                POP     {R1-R12, LR}                      ; repopulate register state
+                BX      LR                                ; return to caller               
+ 
+Verify_FLASH_SR_BSY_Bit_Cleared
+                PUSH    {R1-R12, LR}                      ; save register state
+                LDR     R0, =0x40023C0C                   ; load address of the FLASH_SR register
+                LDR     R1, [R0]                          ; load value inside FLASH_SR
+                TST     R1, #1<<16                        ; test the BSY bit
+                BNE     Verify_FLASH_SR_BSY_Bit_Cleared   ; branch back if BSY bit is still 1
+                POP     {R1-R12, LR}                      ; repopulate register state
+                BX      LR                                ; return to caller  
 
-    bl Infinite_Loop                                // call the Infinite_Loop function
+Enable_Write_To_Flash
+                PUSH    {R1-R12, LR}                      ; save register state
+                LDR     R0, =0x40023C10                   ; load address of the FLASH_CR register
+                LDR     R1, [R0]                          ; load value inside FLASH_CR                                
+                ORR     R1, #1<<0                         ; set the PG bit
+                ORR     R1, #1<<9                         ; set the PSIZE bit, program x32
+                AND     R1, #~(0<<8)                      ; clear the PSIZE bit, program x32
+                STR     R1, [R0]                          ; store value into the FLASH_CR register
+                POP     {R1-R12, LR}                      ; repopulate register state
+                BX      LR                                ; return to caller
 
-/**********************************************************************************************************
- * FUNCTION NAME: Unlock_Flash
- *
- * DESCRIPTION:
- * This function unlocks the flash memory for write access by configuring the
- * necessary key values in the FLASH_KEYR and FLASH_OPTKEYR registers.
- *
- * INPUTS:
- * None
- *
- * OUTPUTS:
- * None
- *
- * RETURNS:
- * None
- *
- * AUTHOR: Kevin Thomas
- * DATE: July 2, 2023
- *
- * USAGE:
- * Call this function to unlock the flash memory before performing write
- * operations on it.
- *
- * NOTES:
- * - This function assumes that the necessary flash unlocking sequences and
- *   permissions have been correctly configured in the system.
- * - The function saves and restores the state of registers r1-r12 and lr.
- *********************************************************************************************************/
-Unlock_Flash:
-    push {r1-r12, lr}                               // save register state
-    ldr r0, =FLASH_KEYR                             // load address of the FLASH_KEYR register into r0
-    ldr r1, =0x45670123                             // load KEY1 value inside FLASH_KEYR into r1
-    ldr r2, =0xCDEF89AB                             // load KEY2 value inside FLASH_KEYR into r2
-    str r1, [r0]                                    // store the value into the FLASH_KEYR register
-    str r2, [r0]                                    // store the value into the FLASH_KEYR register
-    ldr r0, =FLASH_OPTKEYR                          // load address of the FLASH_OPTKEYR register into r0
-    ldr r1, =0x08192A3B                             // load OPTKEY1 value inside FLASH_OPTKEYR into r1
-    ldr r2, =0x4C5D6E7F                             // load OPTKEY2 value inside FLASH_OPTKEYR into r2
-    str r1, [r0]                                    // store value into the FLASH_OPTKEYR register
-    str r2, [r0]                                    // store value into the FLASH_OPTKEYR register
-    pop {r1-r12, lr}                                // repopulate register state
-    bx lr                                           // return to caller
+Write_To_Flash
+                PUSH    {R1-R12, LR}                      ; save register state
+                STR     R1, [R0]                          ; store data into the sector 5 address
+                POP     {R1-R12, LR}                      ; repopulate register state
+                BX      LR                                ; return to caller
 
-/**********************************************************************************************************
- * FUNCTION NAME: Erase_Sector_5_Flash
- *
- * DESCRIPTION:
- * This function erases Sector 5 of the flash memory by setting the necessary
- * control bits in the FLASH_CR register.
- *
- * INPUTS:
- * None
- *
- * OUTPUTS:
- * None
- *
- * RETURNS:
- * None
- *
- * AUTHOR: Kevin Thomas
- * DATE: July 2, 2023
- *
- * USAGE:
- * Call this function to erase Sector 5 of the flash memory.
- *
- * NOTES:
- * - This function assumes that the necessary flash erasure sequences and
- *   permissions have been correctly configured in the system.
- * - The function saves and restores the state of registers r1-r12 and lr.
- *********************************************************************************************************/
-Erase_Sector_5_Flash:
-    push {r1-r12, lr}                               // save register state
-    ldr r0, =FLASH_CR                               // load address of the FLASH_CR register into r0
-    ldr r1, [r0]                                    // load value inside FLASH_CR into r1
-    orr r1, r1, #0b00000000000000010000000000000000 // set the STRT bit
-    orr r1, r1, #0b00000000000000000000000000100000 // set the SNB higher bit, sector 5
-    orr r1, r1, #0b00000000000000000000000000001000 // set the SNB lower bit, sector 5
-    orr r1, r1, #0b00000000000000000000000000000010 // set the SER bit
-    str r1, [r0]                                    // store value into the FLASH_CR register
-    pop {r1-r12, lr}                                // repopulate register state
-    bx lr                                           // return to caller
+Lock_Flash				
+                PUSH    {R1-R12, LR}                      ; save register state
+                LDR     R0, =0x40023C10                   ; load address of the FLASH_CR register
+                LDR     R1, [R0]                          ; load value inside FLASH_CR
+                MOV     R1, #0x80000000                   ; set the LOCK bit and clear everything else
+                POP     {R1-R12, LR}                      ; repopulate register state
+                BX      LR                                ; return to caller
 
-/**********************************************************************************************************
- * FUNCTION NAME: Verify_FLASH_SR_BSY_Bit_Cleared
- *
- * DESCRIPTION:
- * This function verifies that the BSY (Busy) bit in the FLASH_SR register is
- * cleared, indicating that the flash memory is no longer busy with an ongoing
- * operation.
- *
- * INPUTS:
- * None
- *
- * OUTPUTS:
- * None
- *
- * RETURNS:
- * None
- *
- * AUTHOR: Kevin Thomas
- * DATE: July 2, 2023
- *
- * USAGE:
- * Call this function to check if the BSY bit in the FLASH_SR register is
- * cleared, indicating that the flash memory is not busy.
- *
- * NOTES:
- * - This function assumes that the FLASH_SR register has been correctly
- *   configured in the system.
- * - The function saves and restores the state of registers r1-r12 and lr.
- *********************************************************************************************************/
-Verify_FLASH_SR_BSY_Bit_Cleared:
-    push {r1-r12,lr}                                // save register state
-    ldr r0, =FLASH_SR                               // load address of the FLASH_SR register into r0
-    ldr r1, [R0]                                    // load value inside FLASH_SR into r1
-    tst r1, #0b00000000000000010000000000000000     // test the BSY bit
-    bne Verify_FLASH_SR_BSY_Bit_Cleared             // branch back if BSY bit is still 1
-    pop {r1-r12,lr}                                 // repopulate register state
-    bx lr                                           // return to caller
+Infinite_Loop
+                B       .		
+;------------------------------------------------------------------------------------------
+                ENDP 
+                ALIGN
+                LTORG
+;------------------------------------------------------------------------------------------		
+NMI_Handler\
+                PROC
+                EXPORT  NMI_Handler                       [WEAK]
+                B       .
+                ENDP
 
-/**********************************************************************************************************
- * FUNCTION NAME: Enable_Write_To_Flash
- *
- * DESCRIPTION:
- * This function enables write access to the flash memory by setting the necessary
- * control bits in the FLASH_CR register.
- *
- * INPUTS:
- * None
- *
- * OUTPUTS:
- * None
- *
- * RETURNS:
- * None
- *
- * AUTHOR: Kevin Thomas
- * DATE: July 2, 2023
- *
- * USAGE:
- * Call this function to enable write access to the flash memory.
- *
- * NOTES:
- * - This function assumes that the necessary flash write enable sequences and
- *   permissions have been correctly configured in the system.
- * - The function saves and restores the state of registers r1-r12 and lr.
- *********************************************************************************************************/
-Enable_Write_To_Flash:
-    push {r1-r12,lr}                                // save register state
-    ldr r0, =FLASH_CR                               // load address of the FLASH_CR register into r0
-    ldr r1, [R0]                                    // load value inside FLASH_CR into r1
-    orr r1, r1, #0b00000000000000000000000000000001 // set the PG bit
-    orr r1, r1, #0b00000000000000000000001000000000 // set the PSIZE highter bit, program x32
-    bic r1, r1, #0b00000000000000000000000100000000 // clear the PSIZE lower bit, program x32
-    str r1, [r0]                                    // store value into the FLASH_CR register
-    pop {r1-r12,lr}                                 // repopulate register state
-    bx lr                                           // return to caller
+HardFault_Handler\
+                PROC
+                EXPORT  HardFault_Handler                 [WEAK]
+                B       .
+                ENDP
 
-/**********************************************************************************************************
- * FUNCTION NAME: Write_To_Flash
- *
- * DESCRIPTION:
- * This function writes a specified data value into a target address within sector
- * 5 of the flash memory. It saves the register state, stores the data into the
- * specified address, and then restores the register state before returning to the
- * caller. The target address and data value are passed as input parameters to this
- * function.
- *
- * INPUTS:
- * - r0: Address to write the data into within sector 5 of the flash memory.
- * - r1: Data value to be written into the specified address.
- *
- * OUTPUTS:
- * None
- *
- * RETURNS:
- * None
- *
- * AUTHOR: Kevin Thomas
- * DATE: July 2, 2023
- *
- * USAGE:
- * Call this function to write a specified data value into a target address within
- * sector 5 of the flash memory. Provide the target address in r0 and the data value
- * in r1 as input parameters when calling this function.
- *
- * NOTES:
- * - This function assumes that the specified address falls within sector 5 of the
- *   flash memory and that the flash write operations have been properly configured
- *   and enabled in the system.
- * - The function saves and restores the state of registers r1-r12 and lr.
- *********************************************************************************************************/
-Write_To_Flash:
-    push {r1-r12,lr}                                // save register state
-    str r1, [r0]                                    // store data into the sector 5 address
-    pop {r1-r12,lr}                                 // repopulate register state
-    bx lr                                           // return to caller
+MemManage_Handler\
+                PROC
+                EXPORT  MemManage_Handler                 [WEAK]
+                B       .
+                ENDP
 
-/**********************************************************************************************************
- * FUNCTION NAME: Lock_Flash
- *
- * DESCRIPTION:
- * This function locks the flash memory by setting the LOCK bit in the FLASH_CR
- * register, preventing any further write access to the flash memory.
- *
- * INPUTS:
- * None
- *
- * OUTPUTS:
- * None
- *
- * RETURNS:
- * None
- *
- * AUTHOR: Kevin Thomas
- * DATE: July 2, 2023
- *
- * USAGE:
- * Call this function to lock the flash memory, preventing any further write access.
- *
- * NOTES:
- * - This function assumes that the necessary flash locking sequences and
- *   permissions have been correctly configured in the system.
- * - The function saves and restores the state of registers r1-r12 and lr.
- *********************************************************************************************************/
-Lock_Flash:
-    push {r1-r12,lr}                                // save register state
-    ldr r0, =FLASH_CR                               // load address of the FLASH_CR register into r0
-    ldr r1, [r0]                                    // load value inside FLASH_CR into r1
-    mov r1, #0b10000000000000000000000000000000     // set the LOCK bit and clear everything else
-    str r1, [r0]                                    // store value into the FLASH_CR register
-    pop {r1-r12,lr}                                 // repopulate register state
-    bx lr                                           // return to caller
+BusFault_Handler\
+                PROC
+                EXPORT  BusFault_Handler                  [WEAK]
+                B       .
+                ENDP
 
-/**********************************************************************************************************
- * FUNCTION NAME: Infinite_Loop
- *
- * DESCRIPTION:
- * This function creates an infinite loop, causing the program execution to remain
- * indefinitely within this loop. It serves as a blocking mechanism to ensure that
- * the program continues to run without exiting or terminating.
- *
- * INPUTS:
- * None
- *
- * OUTPUTS:
- * None
- *
- * RETURNS:
- * None
- *
- * AUTHOR: Kevin Thomas
- * DATE: July 2, 2023
- *
- * USAGE:
- * The "Infinite_Loop" function is used to create an infinite loop within the program.
- * It should be called when a blocking mechanism or continuous program execution is
- * desired. This function should not be explicitly called within user code.
- *
- * NOTES:
- * - This function causes the program execution to be trapped within an infinite loop
- *   and will only exit or terminate if an external interrupt or reset event occurs.
- * - Ensure that proper interrupt handling and reset mechanisms are in place to
- *   prevent the program from being stuck in this infinite loop indefinitely.
- *********************************************************************************************************/
-Infinite_Loop:
-    b Infinite_Loop                                 // infinite loop
+UsageFault_Handler\
+                PROC
+                EXPORT  UsageFault_Handler                [WEAK]
+                B       .
+                ENDP
 
-/**********************************************************************************************************
- * DATA SECTION DEFINITION
- *
- * DESCRIPTION:
- * This assembly code block defines the section as ".data". The ".data" section
- * is commonly used to store initialized data that will be accessible and
- * modifiable during program execution. It typically includes global and static
- * variables, constants, and initialized arrays.
- *
- * USAGE:
- * Include this code block in the assembly file to specify that the following
- * data declarations should be placed in the ".data" section of the compiled
- * binary. This section is where initialized data resides and is accessible for
- * read and write operations.
- *
- * AUTHOR: Kevin Thomas
- * DATE: July 2, 2023
- *
- * NOTES:
- * - Ensure that the subsequent data declarations in the assembly file are
- *   intended to be part of the initialized data section and belong to the
- *   ".data" section.
- *********************************************************************************************************/
-.section .data
+SVC_Handler\
+                PROC
+                EXPORT  SVC_Handler                       [WEAK]
+                B       .
+                ENDP
 
-/**********************************************************************************************************
- * BSS SECTION DEFINITION
- *
- * DESCRIPTION:
- * This assembly code block defines the section as ".bss". The ".bss" section is
- * commonly used to allocate space for uninitialized or zero-initialized
- * variables. It typically includes static and global variables that do not
- * require explicit initialization.
- *
- * USAGE:
- * Include this code block in the assembly file to specify that the subsequent
- * variable declarations should be placed in the ".bss" section of the compiled
- * binary. This section is where memory is reserved for variables that will be
- * initialized to zero or left uninitialized.
- *
- * AUTHOR: Kevin Thomas
- * DATE: July 2, 2023
- *
- * NOTES:
- * - Ensure that the subsequent variable declarations in the assembly file are
- *   intended to be part of the uninitialized or zero-initialized data and
- *   belong to the ".bss" section.
- *********************************************************************************************************/
-.section .bss
+DebugMon_Handler\
+                PROC
+                EXPORT  DebugMon_Handler                  [WEAK]
+                B       .
+                ENDP
 
-/**********************************************************************************************************
- * ALIGN AND END DIRECTIVES
- *
- * DESCRIPTION:
- * This assembly code block includes the `.align` and `.end` directives. The
- * `.align` directive is used to align the following code or data on a specific
- * memory boundary. The `.end` directive marks the end of the assembly file.
- *
- * USAGE:
- * Include this code block in the assembly file to specify alignment requirements
- * and mark the end of the file. The `.align` directive ensures that the
- * subsequent code or data is aligned according to the specified boundary. The
- * `.end` directive denotes the end of the assembly file.
- *
- * AUTHOR: Kevin Thomas
- * DATE: July 2, 2023
- *
- * NOTES:
- * - Adjust the alignment value in the `.align` directive as per your specific
- *   requirements.
- * - Ensure that the `.end` directive is placed at the end of the assembly file.
- * - Additional directives or code can be added after the `.end` directive.
- *********************************************************************************************************/
-.align
-.end
+PendSV_Handler\
+                PROC
+                EXPORT  PendSV_Handler                    [WEAK]
+                B       .
+                ENDP
+
+SysTick_Handler\
+                PROC
+                EXPORT  SysTick_Handler                   [WEAK]
+                B       .
+                ENDP
+
+Default_Handler\
+                PROC
+                EXPORT  WWDG_IRQHandler                   [WEAK]                                        
+                EXPORT  PVD_IRQHandler                    [WEAK]                      
+                EXPORT  TAMP_STAMP_IRQHandler             [WEAK]         
+                EXPORT  RTC_WKUP_IRQHandler               [WEAK]                     
+                EXPORT  FLASH_IRQHandler                  [WEAK]                                         
+                EXPORT  RCC_IRQHandler                    [WEAK]                                            
+                EXPORT  EXTI0_IRQHandler                  [WEAK]                                            
+                EXPORT  EXTI1_IRQHandler                  [WEAK]                                             
+                EXPORT  EXTI2_IRQHandler                  [WEAK]                                            
+                EXPORT  EXTI3_IRQHandler                  [WEAK]                                           
+                EXPORT  EXTI4_IRQHandler                  [WEAK]                                            
+                EXPORT  DMA1_Stream0_IRQHandler           [WEAK]                                
+                EXPORT  DMA1_Stream1_IRQHandler           [WEAK]                                   
+                EXPORT  DMA1_Stream2_IRQHandler           [WEAK]                                   
+                EXPORT  DMA1_Stream3_IRQHandler           [WEAK]                                   
+                EXPORT  DMA1_Stream4_IRQHandler           [WEAK]                                   
+                EXPORT  DMA1_Stream5_IRQHandler           [WEAK]                                   
+                EXPORT  DMA1_Stream6_IRQHandler           [WEAK]                                   
+                EXPORT  ADC_IRQHandler                    [WEAK]                                                                        
+                EXPORT  EXTI9_5_IRQHandler                [WEAK]                                    
+                EXPORT  TIM1_BRK_TIM9_IRQHandler          [WEAK]                  
+                EXPORT  TIM1_UP_TIM10_IRQHandler          [WEAK]                
+                EXPORT  TIM1_TRG_COM_TIM11_IRQHandler     [WEAK] 
+                EXPORT  TIM1_CC_IRQHandler                [WEAK]                                   
+                EXPORT  TIM2_IRQHandler                   [WEAK]                                            
+                EXPORT  TIM3_IRQHandler                   [WEAK]                                            
+                EXPORT  TIM4_IRQHandler                   [WEAK]                                            
+                EXPORT  I2C1_EV_IRQHandler                [WEAK]                                             
+                EXPORT  I2C1_ER_IRQHandler                [WEAK]                                             
+                EXPORT  I2C2_EV_IRQHandler                [WEAK]                                            
+                EXPORT  I2C2_ER_IRQHandler                [WEAK]                                               
+                EXPORT  SPI1_IRQHandler                   [WEAK]                                           
+                EXPORT  SPI2_IRQHandler                   [WEAK]                                            
+                EXPORT  USART1_IRQHandler                 [WEAK]                                          
+                EXPORT  USART2_IRQHandler                 [WEAK]                                                                                  
+                EXPORT  EXTI15_10_IRQHandler              [WEAK]                                  
+                EXPORT  RTC_Alarm_IRQHandler              [WEAK]                  
+                EXPORT  OTG_FS_WKUP_IRQHandler            [WEAK]                        
+                EXPORT  DMA1_Stream7_IRQHandler           [WEAK]                                                                                     
+                EXPORT  SDIO_IRQHandler                   [WEAK]                                             
+                EXPORT  TIM5_IRQHandler                   [WEAK]                                             
+                EXPORT  SPI3_IRQHandler                   [WEAK]                                                               
+                EXPORT  DMA2_Stream0_IRQHandler           [WEAK]                                  
+                EXPORT  DMA2_Stream1_IRQHandler           [WEAK]                                   
+                EXPORT  DMA2_Stream2_IRQHandler           [WEAK]                                    
+                EXPORT  DMA2_Stream3_IRQHandler           [WEAK]                                    
+                EXPORT  DMA2_Stream4_IRQHandler           [WEAK]                                                                                                     
+                EXPORT  OTG_FS_IRQHandler                 [WEAK]                                       
+                EXPORT  DMA2_Stream5_IRQHandler           [WEAK]                                   
+                EXPORT  DMA2_Stream6_IRQHandler           [WEAK]                                   
+                EXPORT  DMA2_Stream7_IRQHandler           [WEAK]                                   
+                EXPORT  USART6_IRQHandler                 [WEAK]                                           
+                EXPORT  I2C3_EV_IRQHandler                [WEAK]                                              
+                EXPORT  I2C3_ER_IRQHandler                [WEAK]                                              
+                EXPORT  FPU_IRQHandler                    [WEAK]
+			    EXPORT  SPI4_IRQHandler                   [WEAK]
+          
+WWDG_IRQHandler                                                       
+
+PVD_IRQHandler                                      
+
+TAMP_STAMP_IRQHandler                  
+
+RTC_WKUP_IRQHandler                                
+
+FLASH_IRQHandler                                                       
+
+RCC_IRQHandler                                                            
+
+EXTI0_IRQHandler                                                          
+
+EXTI1_IRQHandler                                                           
+
+EXTI2_IRQHandler                                                          
+
+EXTI3_IRQHandler                                                         
+
+EXTI4_IRQHandler                                                          
+
+DMA1_Stream0_IRQHandler                                       
+
+DMA1_Stream1_IRQHandler                                          
+
+DMA1_Stream2_IRQHandler                                          
+
+DMA1_Stream3_IRQHandler                                          
+
+DMA1_Stream4_IRQHandler                                          
+
+DMA1_Stream5_IRQHandler                                          
+
+DMA1_Stream6_IRQHandler                                          
+
+ADC_IRQHandler                                                                                                    
+
+EXTI9_5_IRQHandler                                                
+
+TIM1_BRK_TIM9_IRQHandler                        
+
+TIM1_UP_TIM10_IRQHandler                      
+
+TIM1_TRG_COM_TIM11_IRQHandler  
+
+TIM1_CC_IRQHandler                                               
+
+TIM2_IRQHandler                                                           
+
+TIM3_IRQHandler                                                           
+
+TIM4_IRQHandler                                                           
+
+I2C1_EV_IRQHandler                                                         
+
+I2C1_ER_IRQHandler                                                         
+
+I2C2_EV_IRQHandler                                                        
+
+I2C2_ER_IRQHandler                                                           
+
+SPI1_IRQHandler                                                          
+
+SPI2_IRQHandler                                                           
+
+USART1_IRQHandler                                                       
+
+USART2_IRQHandler                                                                                                           
+
+EXTI15_10_IRQHandler                                            
+
+RTC_Alarm_IRQHandler                            
+
+OTG_FS_WKUP_IRQHandler                                                                           
+
+DMA1_Stream7_IRQHandler                                                                                                             
+
+SDIO_IRQHandler                                                            
+
+TIM5_IRQHandler                                                            
+
+SPI3_IRQHandler                                                                                     
+
+DMA2_Stream0_IRQHandler                                         
+
+DMA2_Stream1_IRQHandler                                          
+
+DMA2_Stream2_IRQHandler                                           
+
+DMA2_Stream3_IRQHandler                                           
+
+DMA2_Stream4_IRQHandler                                                                                                                                  
+
+OTG_FS_IRQHandler                                                    
+
+DMA2_Stream5_IRQHandler                                          
+
+DMA2_Stream6_IRQHandler                                          
+
+DMA2_Stream7_IRQHandler                                          
+
+USART6_IRQHandler                                                        
+
+I2C3_EV_IRQHandler                                                          
+
+I2C3_ER_IRQHandler                                                          
+
+FPU_IRQHandler
+
+SPI4_IRQHandler
+                
+				B       .
+
+                ENDP
+                ALIGN
+;------------------------------------------------------------------------------------------
+				END
+;------------------------------------------------------------------------------------------
 ```
 
 ## Schematic
