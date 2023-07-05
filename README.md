@@ -1,14 +1,3 @@
-![image](https://github.com/mytechnotalent/STM32F401CCU6-Persistent-Flash-Driver/blob/main/STM32F401CCU6%20Flash%20Persistence%20Embedded%20Assembler.png?raw=true)
-
-## FREE Reverse Engineering Self-Study Course [HERE](https://github.com/mytechnotalent/Reverse-Engineering-Tutorial)
-
-<br>
-
-# STM32F401CCU6 Persistent Flash Driver
-STM32F401CCU6 persistent flash driver.
-
-## Code
-```
 ;------------------------------------------------------------------------------------------
 ; MIT License
 ;
@@ -170,7 +159,7 @@ Reset_Handler   PROC
                 EXPORT  Reset_Handler                     [WEAK]
                 LDR     R0, =__start
                 BX      R0
-;------------------------------------------------------------------------------------------
+;------------------------------------------------------------------------------------------------------------
 __start
                 BL      Unlock_Flash                      ; call the Unlock_Flash function
 
@@ -189,7 +178,7 @@ __start
                 BL      Lock_Flash                        ; call the Lock_Flash function
                     
                 BL      Infinite_Loop                     ; call the Infinite_Loop function
-;------------------------------------------------------------------------------------------
+;------------------------------------------------------------------------------------------------------------
 Unlock_Flash
                 PUSH    {R1-R12, LR}                      ; save register state
                 LDR     R0, =0x40023C04                   ; load address of the FLASH_KEYR register
@@ -248,11 +237,11 @@ Lock_Flash
 
 Infinite_Loop
                 B       .
-;------------------------------------------------------------------------------------------
+;------------------------------------------------------------------------------------------------------------
                 ENDP 
                 ALIGN
                 LTORG
-;------------------------------------------------------------------------------------------
+;------------------------------------------------------------------------------------------------------------
 NMI_Handler\
                 PROC
                 EXPORT  NMI_Handler                       [WEAK]
@@ -482,13 +471,6 @@ SPI4_IRQHandler
 
                 ENDP
                 ALIGN
-;------------------------------------------------------------------------------------------
+;------------------------------------------------------------------------------------------------------------
                 END
-;------------------------------------------------------------------------------------------
-```
-
-## Schematic
-![image](https://github.com/mytechnotalent/STM32F401CCU6-Persistent-Flash-Driver/blob/main/STM32F401CCU6%20Schematic.jpg?raw=true)
-
-## License
-[MIT License](https://raw.githubusercontent.com/mytechnotalent/STM32F401CCU6-Persistent-Flash-Driver/main/LICENSE)
+;------------------------------------------------------------------------------------------------------------
