@@ -1,14 +1,3 @@
-![image](https://github.com/mytechnotalent/STM32F401CCU6-Persistent-Flash-Driver/blob/main/STM32F401CCU6%20Flash%20Persistence%20Embedded%20Assembler.png?raw=true)
-
-## FREE Reverse Engineering Self-Study Course [HERE](https://github.com/mytechnotalent/Reverse-Engineering-Tutorial)
-
-<br>
-
-# STM32F401CCU6 Persistent Flash Driver
-STM32F401CCU6 persistent flash driver.
-
-## Code
-```
 ;------------------------------------------------------------------------------------------------------------
 ; MIT License
 ;
@@ -485,10 +474,3 @@ SPI4_IRQHandler
 ;------------------------------------------------------------------------------------------------------------
                 END
 ;------------------------------------------------------------------------------------------------------------
-```
-
-## Schematic
-![image](https://github.com/mytechnotalent/STM32F401CCU6-Persistent-Flash-Driver/blob/main/STM32F401CCU6%20Schematic.jpg?raw=true)
-
-## License
-[MIT License](https://raw.githubusercontent.com/mytechnotalent/STM32F401CCU6-Persistent-Flash-Driver/main/LICENSE)
