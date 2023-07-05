@@ -1,4 +1,15 @@
-;------------------------------------------------------------------------------------------
+![image](https://github.com/mytechnotalent/STM32F401CCU6-Persistent-Flash-Driver/blob/main/STM32F401CCU6%20Flash%20Persistence%20Embedded%20Assembler.png?raw=true)
+
+## FREE Reverse Engineering Self-Study Course [HERE](https://github.com/mytechnotalent/Reverse-Engineering-Tutorial)
+
+<br>
+
+# STM32F401CCU6 Persistent Flash Driver
+STM32F401CCU6 persistent flash driver.
+
+## Code
+```
+;------------------------------------------------------------------------------------------------------------
 ; MIT License
 ;
 ; Copyright (c) 2023 My Techno Talent
@@ -20,7 +31,7 @@
 ; LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 ; OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 ; SOFTWARE.
-;------------------------------------------------------------------------------------------
+;------------------------------------------------------------------------------------------------------------
 ; FILE: main.s
 ;
 ; DESCRIPTION:
@@ -29,12 +40,12 @@
 ; 
 ; AUTHOR: Kevin Thomas
 ; DATE CREATED: July 4, 2023
-; DATE UPDATED: July 4, 2023
+; DATE UPDATED: July 5, 2023
 ; 
 ; USAGE:
 ; 1. Assemble and link the code using the Keil.
 ; 2. Run or debug the binary using the Keil.
-;------------------------------------------------------------------------------------------
+;------------------------------------------------------------------------------------------------------------
 Stack_Size      EQU     0x00000400
 
                 AREA    STACK, NOINIT, READWRITE, ALIGN=3
@@ -155,11 +166,12 @@ __Vectors_Size  EQU  __Vectors_End - __Vectors
 
                 AREA    |.text|, CODE, READONLY
 
+;------------------------------------------------------------------------------------------------------------
 Reset_Handler   PROC
                 EXPORT  Reset_Handler                     [WEAK]
                 LDR     R0, =__start
                 BX      R0
-;------------------------------------------------------------------------------------------------------------
+
 __start
                 BL      Unlock_Flash                      ; call the Unlock_Flash function
 
@@ -178,7 +190,7 @@ __start
                 BL      Lock_Flash                        ; call the Lock_Flash function
                     
                 BL      Infinite_Loop                     ; call the Infinite_Loop function
-;------------------------------------------------------------------------------------------------------------
+
 Unlock_Flash
                 PUSH    {R1-R12, LR}                      ; save register state
                 LDR     R0, =0x40023C04                   ; load address of the FLASH_KEYR register
@@ -237,10 +249,9 @@ Lock_Flash
 
 Infinite_Loop
                 B       .
-;------------------------------------------------------------------------------------------------------------
+
                 ENDP 
                 ALIGN
-                LTORG
 ;------------------------------------------------------------------------------------------------------------
 NMI_Handler\
                 PROC
@@ -474,3 +485,10 @@ SPI4_IRQHandler
 ;------------------------------------------------------------------------------------------------------------
                 END
 ;------------------------------------------------------------------------------------------------------------
+```
+
+## Schematic
+![image](https://github.com/mytechnotalent/STM32F401CCU6-Persistent-Flash-Driver/blob/main/STM32F401CCU6%20Schematic.jpg?raw=true)
+
+## License
+[MIT License](https://raw.githubusercontent.com/mytechnotalent/STM32F401CCU6-Persistent-Flash-Driver/main/LICENSE)
