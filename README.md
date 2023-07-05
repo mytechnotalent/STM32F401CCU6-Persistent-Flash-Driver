@@ -9,7 +9,7 @@ STM32F401CCU6 persistent flash driver.
 
 ## Code
 ```
-;------------------------------------------------------------------------------------------
+;------------------------------------------------------------------------------------------------------------
 ; MIT License
 ;
 ; Copyright (c) 2023 My Techno Talent
@@ -31,7 +31,7 @@ STM32F401CCU6 persistent flash driver.
 ; LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 ; OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 ; SOFTWARE.
-;------------------------------------------------------------------------------------------
+;------------------------------------------------------------------------------------------------------------
 ; FILE: main.s
 ;
 ; DESCRIPTION:
@@ -45,7 +45,7 @@ STM32F401CCU6 persistent flash driver.
 ; USAGE:
 ; 1. Assemble and link the code using the Keil.
 ; 2. Run or debug the binary using the Keil.
-;------------------------------------------------------------------------------------------
+;------------------------------------------------------------------------------------------------------------
 Stack_Size      EQU     0x00000400
 
                 AREA    STACK, NOINIT, READWRITE, ALIGN=3
