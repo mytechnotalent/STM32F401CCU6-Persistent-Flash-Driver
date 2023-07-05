@@ -154,7 +154,6 @@ __Vectors_End
 __Vectors_Size  EQU  __Vectors_End - __Vectors
 
                 AREA    |.text|, CODE, READONLY
-
 ;------------------------------------------------------------------------------------------------------------
 Reset_Handler   PROC
                 EXPORT  Reset_Handler                     [WEAK]
