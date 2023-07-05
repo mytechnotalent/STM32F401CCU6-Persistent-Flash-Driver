@@ -176,7 +176,7 @@ __start
 
                 BL      Erase_Sector_5_Flash              ; call the Erase_Sector_5_Flash function
 
-                BL      Verify_FLASH_SR_BSY_Bit_Cleared   ; call the Verify_FLASH_SR_BSY_Bit_Cleared funtion
+                BL      Verify_FLASH_SR_BSY_Bit_Cleared   ; call the Verify_FLASH_SR_BSY_Bit_Cleared function
 
                 BL      Enable_Write_To_Flash             ; call the Enable_Write_To_Flash function
 
