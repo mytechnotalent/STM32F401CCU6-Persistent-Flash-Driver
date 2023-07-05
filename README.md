@@ -75,48 +75,48 @@ __Vectors       DCD     __initial_sp                      ; Top of Stack
                 DCD     0                                 ; Reserved
                 DCD     PendSV_Handler                    ; PendSV Handler
                 DCD     SysTick_Handler                   ; SysTick Handler
-                DCD     WWDG_IRQHandler                   ; Window WatchDog                                        
-                DCD     PVD_IRQHandler                    ; PVD through EXTI Line detection                        
-                DCD     TAMP_STAMP_IRQHandler             ; Tamper and TimeStamps through the EXTI line            
-                DCD     RTC_WKUP_IRQHandler               ; RTC Wakeup through the EXTI line                       
-                DCD     FLASH_IRQHandler                  ; FLASH                                           
-                DCD     RCC_IRQHandler                    ; RCC                                             
-                DCD     EXTI0_IRQHandler                  ; EXTI Line0                                             
-                DCD     EXTI1_IRQHandler                  ; EXTI Line1                                             
-                DCD     EXTI2_IRQHandler                  ; EXTI Line2                                             
-                DCD     EXTI3_IRQHandler                  ; EXTI Line3                                             
-                DCD     EXTI4_IRQHandler                  ; EXTI Line4                                             
-                DCD     DMA1_Stream0_IRQHandler           ; DMA1 Stream 0                                   
-                DCD     DMA1_Stream1_IRQHandler           ; DMA1 Stream 1                                   
-                DCD     DMA1_Stream2_IRQHandler           ; DMA1 Stream 2                                   
-                DCD     DMA1_Stream3_IRQHandler           ; DMA1 Stream 3                                   
-                DCD     DMA1_Stream4_IRQHandler           ; DMA1 Stream 4                                   
-                DCD     DMA1_Stream5_IRQHandler           ; DMA1 Stream 5                                   
-                DCD     DMA1_Stream6_IRQHandler           ; DMA1 Stream 6                                   
-                DCD     ADC_IRQHandler                    ; ADC1, ADC2 and ADC3s                            
-                DCD     0                                 ; Reserved                                                
-                DCD     0                                 ; Reserved                                               
-                DCD     0                                 ; Reserved                                             
-                DCD     0                                 ; Reserved                                               
-                DCD     EXTI9_5_IRQHandler                ; External Line[9:5]s                                    
-                DCD     TIM1_BRK_TIM9_IRQHandler          ; TIM1 Break and TIM9                   
-                DCD     TIM1_UP_TIM10_IRQHandler          ; TIM1 Update and TIM10                 
+                DCD     WWDG_IRQHandler                   ; Window WatchDog
+                DCD     PVD_IRQHandler                    ; PVD through EXTI Line detection
+                DCD     TAMP_STAMP_IRQHandler             ; Tamper and TimeStamps through the EXTI line
+                DCD     RTC_WKUP_IRQHandler               ; RTC Wakeup through the EXTI line
+                DCD     FLASH_IRQHandler                  ; FLASH
+                DCD     RCC_IRQHandler                    ; RCC
+                DCD     EXTI0_IRQHandler                  ; EXTI Line0
+                DCD     EXTI1_IRQHandler                  ; EXTI Line1
+                DCD     EXTI2_IRQHandler                  ; EXTI Line2
+                DCD     EXTI3_IRQHandler                  ; EXTI Line3
+                DCD     EXTI4_IRQHandler                  ; EXTI Line4
+                DCD     DMA1_Stream0_IRQHandler           ; DMA1 Stream 0
+                DCD     DMA1_Stream1_IRQHandler           ; DMA1 Stream 1
+                DCD     DMA1_Stream2_IRQHandler           ; DMA1 Stream 2
+                DCD     DMA1_Stream3_IRQHandler           ; DMA1 Stream 3
+                DCD     DMA1_Stream4_IRQHandler           ; DMA1 Stream 4
+                DCD     DMA1_Stream5_IRQHandler           ; DMA1 Stream 5
+                DCD     DMA1_Stream6_IRQHandler           ; DMA1 Stream 6
+                DCD     ADC_IRQHandler                    ; ADC1, ADC2 and ADC3s
+                DCD     0                                 ; Reserved
+                DCD     0                                 ; Reserved
+                DCD     0                                 ; Reserved
+                DCD     0                                 ; Reserved
+                DCD     EXTI9_5_IRQHandler                ; External Line[9:5]s
+                DCD     TIM1_BRK_TIM9_IRQHandler          ; TIM1 Break and TIM9
+                DCD     TIM1_UP_TIM10_IRQHandler          ; TIM1 Update and TIM10
                 DCD     TIM1_TRG_COM_TIM11_IRQHandler     ; TIM1 Trigger and Commutation and TIM11
-                DCD     TIM1_CC_IRQHandler                ; TIM1 Capture Compare                                   
-                DCD     TIM2_IRQHandler                   ; TIM2                                            
-                DCD     TIM3_IRQHandler                   ; TIM3                                            
-                DCD     TIM4_IRQHandler                   ; TIM4                                            
-                DCD     I2C1_EV_IRQHandler                ; I2C1 Event                                             
-                DCD     I2C1_ER_IRQHandler                ; I2C1 Error                                             
-                DCD     I2C2_EV_IRQHandler                ; I2C2 Event                                             
-                DCD     I2C2_ER_IRQHandler                ; I2C2 Error                                               
-                DCD     SPI1_IRQHandler                   ; SPI1                                            
-                DCD     SPI2_IRQHandler                   ; SPI2                                            
-                DCD     USART1_IRQHandler                 ; USART1                                          
-                DCD     USART2_IRQHandler                 ; USART2                                          
-                DCD     0                                 ; Reserved                                          
-                DCD     EXTI15_10_IRQHandler              ; External Line[15:10]s                                  
-                DCD     RTC_Alarm_IRQHandler              ; RTC Alarm (A and B) through EXTI Line                  
+                DCD     TIM1_CC_IRQHandler                ; TIM1 Capture Compare
+                DCD     TIM2_IRQHandler                   ; TIM2
+                DCD     TIM3_IRQHandler                   ; TIM3
+                DCD     TIM4_IRQHandler                   ; TIM4
+                DCD     I2C1_EV_IRQHandler                ; I2C1 Event
+                DCD     I2C1_ER_IRQHandler                ; I2C1 Error
+                DCD     I2C2_EV_IRQHandler                ; I2C2 Event
+                DCD     I2C2_ER_IRQHandler                ; I2C2 Error
+                DCD     SPI1_IRQHandler                   ; SPI1
+                DCD     SPI2_IRQHandler                   ; SPI2
+                DCD     USART1_IRQHandler                 ; USART1
+                DCD     USART2_IRQHandler                 ; USART2
+                DCD     0                                 ; Reserved
+                DCD     EXTI15_10_IRQHandler              ; External Line[15:10]s
+                DCD     RTC_Alarm_IRQHandler              ; RTC Alarm (A and B) through EXTI Line
                 DCD     OTG_FS_WKUP_IRQHandler            ; USB OTG FS Wakeup through EXTI line                        
                 DCD     0                                 ; Reserved                  
                 DCD     0                                 ; Reserved                 
@@ -136,30 +136,30 @@ __Vectors       DCD     __initial_sp                      ; Top of Stack
                 DCD     DMA2_Stream2_IRQHandler           ; DMA2 Stream 2                                   
                 DCD     DMA2_Stream3_IRQHandler           ; DMA2 Stream 3                                   
                 DCD     DMA2_Stream4_IRQHandler           ; DMA2 Stream 4
-                DCD     0                                 ; Reserved  
-                DCD     0                                 ; Reserved  
-                DCD     0                                 ; Reserved                                              
-                DCD     0                                 ; Reserved                                               
-                DCD     0                                 ; Reserved                                               
-                DCD     0                                 ; Reserved                                               
-                DCD     OTG_FS_IRQHandler                 ; USB OTG FS                                      
-                DCD     DMA2_Stream5_IRQHandler           ; DMA2 Stream 5                                   
-                DCD     DMA2_Stream6_IRQHandler           ; DMA2 Stream 6                                   
-                DCD     DMA2_Stream7_IRQHandler           ; DMA2 Stream 7                                   
-                DCD     USART6_IRQHandler                 ; USART6                                           
-                DCD     I2C3_EV_IRQHandler                ; I2C3 event                                             
-                DCD     I2C3_ER_IRQHandler                ; I2C3 error                                             
-                DCD     0                                 ; Reserved                     
-                DCD     0                                 ; Reserved                       
-                DCD     0                                 ; Reserved                         
-                DCD     0                                 ; Reserved                                    
-                DCD     0                                 ; Reserved  
-                DCD     0                                 ; Reserved                                                  
+                DCD     0                                 ; Reserved
+                DCD     0                                 ; Reserved
+                DCD     0                                 ; Reserved
+                DCD     0                                 ; Reserved
+                DCD     0                                 ; Reserved
+                DCD     0                                 ; Reserved
+                DCD     OTG_FS_IRQHandler                 ; USB OTG FS
+                DCD     DMA2_Stream5_IRQHandler           ; DMA2 Stream 5
+                DCD     DMA2_Stream6_IRQHandler           ; DMA2 Stream 6
+                DCD     DMA2_Stream7_IRQHandler           ; DMA2 Stream 7
+                DCD     USART6_IRQHandler                 ; USART6
+                DCD     I2C3_EV_IRQHandler                ; I2C3 event
+                DCD     I2C3_ER_IRQHandler                ; I2C3 error
+                DCD     0                                 ; Reserved
+                DCD     0                                 ; Reserved
+                DCD     0                                 ; Reserved
+                DCD     0                                 ; Reserved
+                DCD     0                                 ; Reserved
+                DCD     0                                 ; Reserved
                 DCD     0                                 ; Reserved
                 DCD     FPU_IRQHandler                    ; FPU
                 DCD     0                                 ; Reserved
                 DCD     0                                 ; Reserved
-                DCD     SPI4_IRQHandler                   ; SPI4                                    
+                DCD     SPI4_IRQHandler                   ; SPI4
 __Vectors_End
 
 __Vectors_Size  EQU  __Vectors_End - __Vectors
@@ -181,7 +181,7 @@ __start
                 BL      Enable_Write_To_Flash             ; call the Enable_Write_To_Flash function
 
                 LDR     R0, =0x0803FFFC                   ; address to write to within sector 5 flash  
-                LDR     R1, =0xDEADBEEF                   ; data to write into the sector 5 addres
+                LDR     R1, =0xDEADBEEF                   ; data to write into the sector 5 address
                 BL      Write_To_Flash                    ; call the Write_To_Flash function
 
                 BL      Verify_FLASH_SR_BSY_Bit_Cleared   ; call the Verify_FLASH_SR_BSY_Bit_Cleared function
