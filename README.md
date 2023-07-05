@@ -40,7 +40,7 @@ STM32F401CCU6 persistent flash driver.
 ; 
 ; AUTHOR: Kevin Thomas
 ; DATE CREATED: July 4, 2023
-; DATE UPDATED: July 4, 2023
+; DATE UPDATED: July 5, 2023
 ; 
 ; USAGE:
 ; 1. Assemble and link the code using the Keil.
@@ -193,8 +193,8 @@ __start
 Unlock_Flash
                 PUSH    {R1-R12, LR}                      ; save register state
                 LDR     R0, =0x40023C04                   ; load address of the FLASH_KEYR register
-                LDR     R1, =0x45670123                   ; load value inside FLASH_KEYR
-                LDR     R2, =0xCDEF89AB                   ; load value inside FLASH_KEYR
+                LDR     R1, =0x45670123                   ; load value inside FLASH_KEYR register
+                LDR     R2, =0xCDEF89AB                   ; load value inside FLASH_KEYR register
                 STR     R1, [R0]                          ; store the value into the FLASH_KEYR register
                 STR     R2, [R0]                          ; store the value into the FLASH_KEYR register
                 POP     {R1-R12, LR}                      ; repopulate register state
@@ -203,7 +203,7 @@ Unlock_Flash
 Erase_Sector_5_Flash
                 PUSH    {R1-R12, LR}                      ; save register state
                 LDR     R0, =0x40023C10                   ; load address of the FLASH_CR register
-                LDR     R1, [R0]                          ; load value inside FLASH_CR
+                LDR     R1, [R0]                          ; load value inside FLASH_CR register
                 ORR     R1, #1<<16                        ; set the STRT bit
                 ORR     R1, #1<<5                         ; set the SNB bit, sector 5
                 ORR     R1, #1<<3                         ; set the SNB bit, sector 5
@@ -215,7 +215,7 @@ Erase_Sector_5_Flash
 Verify_FLASH_SR_BSY_Bit_Cleared
                 PUSH    {R1-R12, LR}                      ; save register state
                 LDR     R0, =0x40023C0C                   ; load address of the FLASH_SR register
-                LDR     R1, [R0]                          ; load value inside FLASH_SR
+                LDR     R1, [R0]                          ; load value inside FLASH_SR register
                 TST     R1, #1<<16                        ; test the BSY bit
                 BNE     Verify_FLASH_SR_BSY_Bit_Cleared   ; branch back if BSY bit is still 1
                 POP     {R1-R12, LR}                      ; repopulate register state
@@ -224,7 +224,7 @@ Verify_FLASH_SR_BSY_Bit_Cleared
 Enable_Write_To_Flash
                 PUSH    {R1-R12, LR}                      ; save register state
                 LDR     R0, =0x40023C10                   ; load address of the FLASH_CR register
-                LDR     R1, [R0]                          ; load value inside FLASH_CR
+                LDR     R1, [R0]                          ; load value inside FLASH_CR register
                 ORR     R1, #1<<0                         ; set the PG bit
                 ORR     R1, #1<<9                         ; set the PSIZE bit, program x32
                 AND     R1, #~(0<<8)                      ; clear the PSIZE bit, program x32
@@ -241,7 +241,7 @@ Write_To_Flash
 Lock_Flash
                 PUSH    {R1-R12, LR}                      ; save register state
                 LDR     R0, =0x40023C10                   ; load address of the FLASH_CR register
-                LDR     R1, [R0]                          ; load value inside FLASH_CR
+                LDR     R1, [R0]                          ; load value inside FLASH_CR register
                 MOV     R1, #0x80000000                   ; set the LOCK bit and clear everything else
                 POP     {R1-R12, LR}                      ; repopulate register state
                 BX      LR                                ; return to caller
