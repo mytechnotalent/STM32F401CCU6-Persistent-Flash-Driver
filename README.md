@@ -37,11 +37,11 @@ STM32F401CCU6 persistent flash driver.
 ; DESCRIPTION:
 ; This file contains the assembly code for a program that creates persistent storage
 ; using the onboard flash utilizing the STM32F401CC6 microcontroller.
-;
+; 
 ; AUTHOR: Kevin Thomas
 ; DATE CREATED: July 4, 2023
 ; DATE UPDATED: July 4, 2023
-;
+; 
 ; USAGE:
 ; 1. Assemble and link the code using the Keil.
 ; 2. Run or debug the binary using the Keil.
@@ -117,24 +117,24 @@ __Vectors       DCD     __initial_sp                      ; Top of Stack
                 DCD     0                                 ; Reserved
                 DCD     EXTI15_10_IRQHandler              ; External Line[15:10]s
                 DCD     RTC_Alarm_IRQHandler              ; RTC Alarm (A and B) through EXTI Line
-                DCD     OTG_FS_WKUP_IRQHandler            ; USB OTG FS Wakeup through EXTI line
+                DCD     OTG_FS_WKUP_IRQHandler            ; USB OTG FS Wakeup through EXTI line                        
+                DCD     0                                 ; Reserved                  
+                DCD     0                                 ; Reserved                 
                 DCD     0                                 ; Reserved
-                DCD     0                                 ; Reserved
-                DCD     0                                 ; Reserved
-                DCD     0                                 ; Reserved
-                DCD     DMA1_Stream7_IRQHandler           ; DMA1 Stream7
-                DCD     0                                 ; Reserved
-                DCD     SDIO_IRQHandler                   ; SDIO
-                DCD     TIM5_IRQHandler                   ; TIM5
-                DCD     SPI3_IRQHandler                   ; SPI3
-                DCD     0                                 ; Reserved
-                DCD     0                                 ; Reserved
-                DCD     0                                 ; Reserved
-                DCD     0                                 ; Reserved
-                DCD     DMA2_Stream0_IRQHandler           ; DMA2 Stream 0
-                DCD     DMA2_Stream1_IRQHandler           ; DMA2 Stream 1
-                DCD     DMA2_Stream2_IRQHandler           ; DMA2 Stream 2
-                DCD     DMA2_Stream3_IRQHandler           ; DMA2 Stream 3
+                DCD     0                                 ; Reserved                                   
+                DCD     DMA1_Stream7_IRQHandler           ; DMA1 Stream7                                           
+                DCD     0                                 ; Reserved                                             
+                DCD     SDIO_IRQHandler                   ; SDIO                                            
+                DCD     TIM5_IRQHandler                   ; TIM5                                            
+                DCD     SPI3_IRQHandler                   ; SPI3                                            
+                DCD     0                                 ; Reserved                                           
+                DCD     0                                 ; Reserved                                           
+                DCD     0                                 ; Reserved                   
+                DCD     0                                 ; Reserved                   
+                DCD     DMA2_Stream0_IRQHandler           ; DMA2 Stream 0                                   
+                DCD     DMA2_Stream1_IRQHandler           ; DMA2 Stream 1                                   
+                DCD     DMA2_Stream2_IRQHandler           ; DMA2 Stream 2                                   
+                DCD     DMA2_Stream3_IRQHandler           ; DMA2 Stream 3                                   
                 DCD     DMA2_Stream4_IRQHandler           ; DMA2 Stream 4
                 DCD     0                                 ; Reserved
                 DCD     0                                 ; Reserved
@@ -170,7 +170,7 @@ Reset_Handler   PROC
                 EXPORT  Reset_Handler                     [WEAK]
                 LDR     R0, =__start
                 BX      R0
-;------------------------------------------------------------------------------------------
+;------------------------------------------------------------------------------------------------------------
 __start
                 BL      Unlock_Flash                      ; call the Unlock_Flash function
 
@@ -187,9 +187,9 @@ __start
                 BL      Verify_FLASH_SR_BSY_Bit_Cleared   ; call the Verify_FLASH_SR_BSY_Bit_Cleared function
 
                 BL      Lock_Flash                        ; call the Lock_Flash function
-
+                    
                 BL      Infinite_Loop                     ; call the Infinite_Loop function
-;------------------------------------------------------------------------------------------
+;------------------------------------------------------------------------------------------------------------
 Unlock_Flash
                 PUSH    {R1-R12, LR}                      ; save register state
                 LDR     R0, =0x40023C04                   ; load address of the FLASH_KEYR register
@@ -211,7 +211,7 @@ Erase_Sector_5_Flash
                 STR     R1, [R0]                          ; store value into the FLASH_CR register
                 POP     {R1-R12, LR}                      ; repopulate register state
                 BX      LR                                ; return to caller
-
+ 
 Verify_FLASH_SR_BSY_Bit_Cleared
                 PUSH    {R1-R12, LR}                      ; save register state
                 LDR     R0, =0x40023C0C                   ; load address of the FLASH_SR register
@@ -248,11 +248,11 @@ Lock_Flash
 
 Infinite_Loop
                 B       .
-;------------------------------------------------------------------------------------------
-                ENDP
+;------------------------------------------------------------------------------------------------------------
+                ENDP 
                 ALIGN
                 LTORG
-;------------------------------------------------------------------------------------------
+;------------------------------------------------------------------------------------------------------------
 NMI_Handler\
                 PROC
                 EXPORT  NMI_Handler                       [WEAK]
@@ -365,7 +365,7 @@ Default_Handler\
                 EXPORT  I2C3_ER_IRQHandler                [WEAK]
                 EXPORT  FPU_IRQHandler                    [WEAK]
                 EXPORT  SPI4_IRQHandler                   [WEAK]
-
+          
 WWDG_IRQHandler
 
 PVD_IRQHandler
@@ -477,14 +477,14 @@ I2C3_ER_IRQHandler
 FPU_IRQHandler
 
 SPI4_IRQHandler
-
+                
                 B     .
 
                 ENDP
                 ALIGN
-;------------------------------------------------------------------------------------------
+;------------------------------------------------------------------------------------------------------------
                 END
-;------------------------------------------------------------------------------------------
+;------------------------------------------------------------------------------------------------------------
 ```
 
 ## Schematic
