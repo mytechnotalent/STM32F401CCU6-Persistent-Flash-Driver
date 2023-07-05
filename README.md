@@ -180,7 +180,7 @@ __start
 
                 BL      Enable_Write_To_Flash             ; call the Enable_Write_To_Flash function
 
-                LDR     R0, =0x0803FFFC                   ; address to write to within sector 5 flash  
+                LDR     R0, =0x0803FFFC                   ; address to write to within sector 5 flash
                 LDR     R1, =0xDEADBEEF                   ; data to write into the sector 5 address
                 BL      Write_To_Flash                    ; call the Write_To_Flash function
 
@@ -189,14 +189,14 @@ __start
                 BL      Lock_Flash                        ; call the Lock_Flash function
                     
                 BL      Infinite_Loop                     ; call the Infinite_Loop function
-;------------------------------------------------------------------------------------------                    
+;------------------------------------------------------------------------------------------
 Unlock_Flash
                 PUSH    {R1-R12, LR}                      ; save register state
                 LDR     R0, =0x40023C04                   ; load address of the FLASH_KEYR register
                 LDR     R1, =0x45670123                   ; load value inside FLASH_KEYR
                 LDR     R2, =0xCDEF89AB                   ; load value inside FLASH_KEYR
                 STR     R1, [R0]                          ; store the value into the FLASH_KEYR register
-                STR     R2, [R0]                          ; store the value into the FLASH_KEYR register 
+                STR     R2, [R0]                          ; store the value into the FLASH_KEYR register
                 POP     {R1-R12, LR}                      ; repopulate register state
                 BX      LR                                ; return to caller
 
@@ -210,7 +210,7 @@ Erase_Sector_5_Flash
                 ORR     R1, #1<<1                         ; set the SER bit
                 STR     R1, [R0]                          ; store value into the FLASH_CR register
                 POP     {R1-R12, LR}                      ; repopulate register state
-                BX      LR                                ; return to caller               
+                BX      LR                                ; return to caller
  
 Verify_FLASH_SR_BSY_Bit_Cleared
                 PUSH    {R1-R12, LR}                      ; save register state
@@ -219,12 +219,12 @@ Verify_FLASH_SR_BSY_Bit_Cleared
                 TST     R1, #1<<16                        ; test the BSY bit
                 BNE     Verify_FLASH_SR_BSY_Bit_Cleared   ; branch back if BSY bit is still 1
                 POP     {R1-R12, LR}                      ; repopulate register state
-                BX      LR                                ; return to caller  
+                BX      LR                                ; return to caller
 
 Enable_Write_To_Flash
                 PUSH    {R1-R12, LR}                      ; save register state
                 LDR     R0, =0x40023C10                   ; load address of the FLASH_CR register
-                LDR     R1, [R0]                          ; load value inside FLASH_CR                                
+                LDR     R1, [R0]                          ; load value inside FLASH_CR
                 ORR     R1, #1<<0                         ; set the PG bit
                 ORR     R1, #1<<9                         ; set the PSIZE bit, program x32
                 AND     R1, #~(0<<8)                      ; clear the PSIZE bit, program x32
@@ -238,7 +238,7 @@ Write_To_Flash
                 POP     {R1-R12, LR}                      ; repopulate register state
                 BX      LR                                ; return to caller
 
-Lock_Flash                    
+Lock_Flash
                 PUSH    {R1-R12, LR}                      ; save register state
                 LDR     R0, =0x40023C10                   ; load address of the FLASH_CR register
                 LDR     R1, [R0]                          ; load value inside FLASH_CR
@@ -247,12 +247,12 @@ Lock_Flash
                 BX      LR                                ; return to caller
 
 Infinite_Loop
-                B       .          
+                B       .
 ;------------------------------------------------------------------------------------------
                 ENDP 
                 ALIGN
                 LTORG
-;------------------------------------------------------------------------------------------          
+;------------------------------------------------------------------------------------------
 NMI_Handler\
                 PROC
                 EXPORT  NMI_Handler                       [WEAK]
@@ -309,170 +309,170 @@ SysTick_Handler\
 
 Default_Handler\
                 PROC
-                EXPORT  WWDG_IRQHandler                   [WEAK]                                        
-                EXPORT  PVD_IRQHandler                    [WEAK]                      
-                EXPORT  TAMP_STAMP_IRQHandler             [WEAK]         
-                EXPORT  RTC_WKUP_IRQHandler               [WEAK]                     
-                EXPORT  FLASH_IRQHandler                  [WEAK]                                         
-                EXPORT  RCC_IRQHandler                    [WEAK]                                            
-                EXPORT  EXTI0_IRQHandler                  [WEAK]                                            
-                EXPORT  EXTI1_IRQHandler                  [WEAK]                                             
-                EXPORT  EXTI2_IRQHandler                  [WEAK]                                            
-                EXPORT  EXTI3_IRQHandler                  [WEAK]                                           
-                EXPORT  EXTI4_IRQHandler                  [WEAK]                                            
-                EXPORT  DMA1_Stream0_IRQHandler           [WEAK]                                
-                EXPORT  DMA1_Stream1_IRQHandler           [WEAK]                                   
-                EXPORT  DMA1_Stream2_IRQHandler           [WEAK]                                   
-                EXPORT  DMA1_Stream3_IRQHandler           [WEAK]                                   
-                EXPORT  DMA1_Stream4_IRQHandler           [WEAK]                                   
-                EXPORT  DMA1_Stream5_IRQHandler           [WEAK]                                   
-                EXPORT  DMA1_Stream6_IRQHandler           [WEAK]                                   
-                EXPORT  ADC_IRQHandler                    [WEAK]                                                                        
-                EXPORT  EXTI9_5_IRQHandler                [WEAK]                                    
-                EXPORT  TIM1_BRK_TIM9_IRQHandler          [WEAK]                  
-                EXPORT  TIM1_UP_TIM10_IRQHandler          [WEAK]                
-                EXPORT  TIM1_TRG_COM_TIM11_IRQHandler     [WEAK] 
-                EXPORT  TIM1_CC_IRQHandler                [WEAK]                                   
-                EXPORT  TIM2_IRQHandler                   [WEAK]                                            
-                EXPORT  TIM3_IRQHandler                   [WEAK]                                            
-                EXPORT  TIM4_IRQHandler                   [WEAK]                                            
-                EXPORT  I2C1_EV_IRQHandler                [WEAK]                                             
-                EXPORT  I2C1_ER_IRQHandler                [WEAK]                                             
-                EXPORT  I2C2_EV_IRQHandler                [WEAK]                                            
-                EXPORT  I2C2_ER_IRQHandler                [WEAK]                                               
-                EXPORT  SPI1_IRQHandler                   [WEAK]                                           
-                EXPORT  SPI2_IRQHandler                   [WEAK]                                            
-                EXPORT  USART1_IRQHandler                 [WEAK]                                          
-                EXPORT  USART2_IRQHandler                 [WEAK]                                                                                  
-                EXPORT  EXTI15_10_IRQHandler              [WEAK]                                  
-                EXPORT  RTC_Alarm_IRQHandler              [WEAK]                  
-                EXPORT  OTG_FS_WKUP_IRQHandler            [WEAK]                        
-                EXPORT  DMA1_Stream7_IRQHandler           [WEAK]                                                                                     
-                EXPORT  SDIO_IRQHandler                   [WEAK]                                             
-                EXPORT  TIM5_IRQHandler                   [WEAK]                                             
-                EXPORT  SPI3_IRQHandler                   [WEAK]                                                               
-                EXPORT  DMA2_Stream0_IRQHandler           [WEAK]                                  
-                EXPORT  DMA2_Stream1_IRQHandler           [WEAK]                                   
-                EXPORT  DMA2_Stream2_IRQHandler           [WEAK]                                    
-                EXPORT  DMA2_Stream3_IRQHandler           [WEAK]                                    
-                EXPORT  DMA2_Stream4_IRQHandler           [WEAK]                                                                                                   
-                EXPORT  OTG_FS_IRQHandler                 [WEAK]                                       
-                EXPORT  DMA2_Stream5_IRQHandler           [WEAK]                                   
-                EXPORT  DMA2_Stream6_IRQHandler           [WEAK]                                   
-                EXPORT  DMA2_Stream7_IRQHandler           [WEAK]                                   
-                EXPORT  USART6_IRQHandler                 [WEAK]                                           
-                EXPORT  I2C3_EV_IRQHandler                [WEAK]                                              
-                EXPORT  I2C3_ER_IRQHandler                [WEAK]                                              
+                EXPORT  WWDG_IRQHandler                   [WEAK]
+                EXPORT  PVD_IRQHandler                    [WEAK]
+                EXPORT  TAMP_STAMP_IRQHandler             [WEAK]
+                EXPORT  RTC_WKUP_IRQHandler               [WEAK]
+                EXPORT  FLASH_IRQHandler                  [WEAK]
+                EXPORT  RCC_IRQHandler                    [WEAK]
+                EXPORT  EXTI0_IRQHandler                  [WEAK]
+                EXPORT  EXTI1_IRQHandler                  [WEAK]
+                EXPORT  EXTI2_IRQHandler                  [WEAK]
+                EXPORT  EXTI3_IRQHandler                  [WEAK]
+                EXPORT  EXTI4_IRQHandler                  [WEAK]
+                EXPORT  DMA1_Stream0_IRQHandler           [WEAK]
+                EXPORT  DMA1_Stream1_IRQHandler           [WEAK]
+                EXPORT  DMA1_Stream2_IRQHandler           [WEAK]
+                EXPORT  DMA1_Stream3_IRQHandler           [WEAK]
+                EXPORT  DMA1_Stream4_IRQHandler           [WEAK]
+                EXPORT  DMA1_Stream5_IRQHandler           [WEAK]
+                EXPORT  DMA1_Stream6_IRQHandler           [WEAK]
+                EXPORT  ADC_IRQHandler                    [WEAK]
+                EXPORT  EXTI9_5_IRQHandler                [WEAK]
+                EXPORT  TIM1_BRK_TIM9_IRQHandler          [WEAK]
+                EXPORT  TIM1_UP_TIM10_IRQHandler          [WEAK]
+                EXPORT  TIM1_TRG_COM_TIM11_IRQHandler     [WEAK]
+                EXPORT  TIM1_CC_IRQHandler                [WEAK]
+                EXPORT  TIM2_IRQHandler                   [WEAK]
+                EXPORT  TIM3_IRQHandler                   [WEAK]
+                EXPORT  TIM4_IRQHandler                   [WEAK]
+                EXPORT  I2C1_EV_IRQHandler                [WEAK]
+                EXPORT  I2C1_ER_IRQHandler                [WEAK]
+                EXPORT  I2C2_EV_IRQHandler                [WEAK]
+                EXPORT  I2C2_ER_IRQHandler                [WEAK]
+                EXPORT  SPI1_IRQHandler                   [WEAK]
+                EXPORT  SPI2_IRQHandler                   [WEAK]
+                EXPORT  USART1_IRQHandler                 [WEAK]
+                EXPORT  USART2_IRQHandler                 [WEAK]
+                EXPORT  EXTI15_10_IRQHandler              [WEAK]
+                EXPORT  RTC_Alarm_IRQHandler              [WEAK]
+                EXPORT  OTG_FS_WKUP_IRQHandler            [WEAK]
+                EXPORT  DMA1_Stream7_IRQHandler           [WEAK]
+                EXPORT  SDIO_IRQHandler                   [WEAK]
+                EXPORT  TIM5_IRQHandler                   [WEAK]
+                EXPORT  SPI3_IRQHandler                   [WEAK]
+                EXPORT  DMA2_Stream0_IRQHandler           [WEAK]
+                EXPORT  DMA2_Stream1_IRQHandler           [WEAK]
+                EXPORT  DMA2_Stream2_IRQHandler           [WEAK]
+                EXPORT  DMA2_Stream3_IRQHandler           [WEAK]
+                EXPORT  DMA2_Stream4_IRQHandler           [WEAK]
+                EXPORT  OTG_FS_IRQHandler                 [WEAK]
+                EXPORT  DMA2_Stream5_IRQHandler           [WEAK]
+                EXPORT  DMA2_Stream6_IRQHandler           [WEAK]
+                EXPORT  DMA2_Stream7_IRQHandler           [WEAK]
+                EXPORT  USART6_IRQHandler                 [WEAK]
+                EXPORT  I2C3_EV_IRQHandler                [WEAK]
+                EXPORT  I2C3_ER_IRQHandler                [WEAK]
                 EXPORT  FPU_IRQHandler                    [WEAK]
                 EXPORT  SPI4_IRQHandler                   [WEAK]
           
-WWDG_IRQHandler                                                       
+WWDG_IRQHandler
 
-PVD_IRQHandler                                      
+PVD_IRQHandler
 
-TAMP_STAMP_IRQHandler                  
+TAMP_STAMP_IRQHandler
 
-RTC_WKUP_IRQHandler                                
+RTC_WKUP_IRQHandler
 
-FLASH_IRQHandler                                                       
+FLASH_IRQHandler
 
-RCC_IRQHandler                                                            
+RCC_IRQHandler
 
-EXTI0_IRQHandler                                                          
+EXTI0_IRQHandler
 
-EXTI1_IRQHandler                                                           
+EXTI1_IRQHandler
 
-EXTI2_IRQHandler                                                          
+EXTI2_IRQHandler
 
-EXTI3_IRQHandler                                                         
+EXTI3_IRQHandler
 
-EXTI4_IRQHandler                                                          
+EXTI4_IRQHandler
 
-DMA1_Stream0_IRQHandler                                       
+DMA1_Stream0_IRQHandler
 
-DMA1_Stream1_IRQHandler                                          
+DMA1_Stream1_IRQHandler
 
-DMA1_Stream2_IRQHandler                                          
+DMA1_Stream2_IRQHandler
 
-DMA1_Stream3_IRQHandler                                          
+DMA1_Stream3_IRQHandler
 
-DMA1_Stream4_IRQHandler                                          
+DMA1_Stream4_IRQHandler
 
-DMA1_Stream5_IRQHandler                                          
+DMA1_Stream5_IRQHandler
 
-DMA1_Stream6_IRQHandler                                          
+DMA1_Stream6_IRQHandler
 
-ADC_IRQHandler                                                                                                    
+ADC_IRQHandler
 
-EXTI9_5_IRQHandler                                                
+EXTI9_5_IRQHandler
 
-TIM1_BRK_TIM9_IRQHandler                        
+TIM1_BRK_TIM9_IRQHandler
 
-TIM1_UP_TIM10_IRQHandler                      
+TIM1_UP_TIM10_IRQHandler
 
-TIM1_TRG_COM_TIM11_IRQHandler  
+TIM1_TRG_COM_TIM11_IRQHandler
 
-TIM1_CC_IRQHandler                                               
+TIM1_CC_IRQHandler
 
-TIM2_IRQHandler                                                           
+TIM2_IRQHandler
 
-TIM3_IRQHandler                                                           
+TIM3_IRQHandler
 
-TIM4_IRQHandler                                                           
+TIM4_IRQHandler
 
-I2C1_EV_IRQHandler                                                         
+I2C1_EV_IRQHandler
 
-I2C1_ER_IRQHandler                                                         
+I2C1_ER_IRQHandler
 
-I2C2_EV_IRQHandler                                                        
+I2C2_EV_IRQHandler
 
-I2C2_ER_IRQHandler                                                           
+I2C2_ER_IRQHandler
 
-SPI1_IRQHandler                                                          
+SPI1_IRQHandler
 
-SPI2_IRQHandler                                                           
+SPI2_IRQHandler
 
-USART1_IRQHandler                                                       
+USART1_IRQHandler
 
-USART2_IRQHandler                                                                                                           
+USART2_IRQHandler
 
-EXTI15_10_IRQHandler                                            
+EXTI15_10_IRQHandler
 
-RTC_Alarm_IRQHandler                            
+RTC_Alarm_IRQHandler
 
-OTG_FS_WKUP_IRQHandler                                                                           
+OTG_FS_WKUP_IRQHandler
 
-DMA1_Stream7_IRQHandler                                                                                                             
+DMA1_Stream7_IRQHandler
 
-SDIO_IRQHandler                                                            
+SDIO_IRQHandler
 
-TIM5_IRQHandler                                                            
+TIM5_IRQHandler
 
-SPI3_IRQHandler                                                                                     
+SPI3_IRQHandler
 
-DMA2_Stream0_IRQHandler                                         
+DMA2_Stream0_IRQHandler
 
-DMA2_Stream1_IRQHandler                                          
+DMA2_Stream1_IRQHandler
 
-DMA2_Stream2_IRQHandler                                           
+DMA2_Stream2_IRQHandler
 
-DMA2_Stream3_IRQHandler                                           
+DMA2_Stream3_IRQHandler
 
-DMA2_Stream4_IRQHandler                                                                                                                                  
+DMA2_Stream4_IRQHandler
 
-OTG_FS_IRQHandler                                                    
+OTG_FS_IRQHandler
 
-DMA2_Stream5_IRQHandler                                          
+DMA2_Stream5_IRQHandler
 
-DMA2_Stream6_IRQHandler                                          
+DMA2_Stream6_IRQHandler
 
-DMA2_Stream7_IRQHandler                                          
+DMA2_Stream7_IRQHandler
 
-USART6_IRQHandler                                                        
+USART6_IRQHandler
 
-I2C3_EV_IRQHandler                                                          
+I2C3_EV_IRQHandler
 
-I2C3_ER_IRQHandler                                                          
+I2C3_ER_IRQHandler
 
 FPU_IRQHandler
 
