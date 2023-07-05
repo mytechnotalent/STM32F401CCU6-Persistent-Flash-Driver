@@ -35,15 +35,15 @@
 ; 1. Assemble and link the code using the Keil.
 ; 2. Run or debug the binary using the Keil.
 ;------------------------------------------------------------------------------------------------------------
-Stack_Size      EQU     0x00000400
-
                 AREA    STACK, NOINIT, READWRITE, ALIGN=3
-Stack_Mem       SPACE   Stack_Size
+
+Stack_Mem       SPACE   0x00000400
 __initial_sp
                 PRESERVE8
                 THUMB
-
+;------------------------------------------------------------------------------------------
                 AREA    RESET, DATA, READONLY
+
                 EXPORT  __Vectors
                 EXPORT  __Vectors_End
                 EXPORT  __Vectors_Size
@@ -152,9 +152,13 @@ __Vectors       DCD     __initial_sp                      ; Top of Stack
 __Vectors_End
 
 __Vectors_Size  EQU  __Vectors_End - __Vectors
-
-                AREA    |.text|, CODE, READONLY
 ;------------------------------------------------------------------------------------------------------------
+                AREA    |.data|, DATA, READONLY
+;------------------------------------------------------------------------------------------------------------
+                AREA    |.bss|, NOINIT, READWRITE
+;------------------------------------------------------------------------------------------------------------
+                AREA    |.text|, CODE, READONLY
+
 Reset_Handler   PROC
                 EXPORT  Reset_Handler                     [WEAK]
                 LDR     R0, =__start
@@ -177,20 +181,17 @@ __start
 
                 BL      Lock_Flash                        ; call the Lock_Flash function
                     
-                BL      Infinite_Loop                     ; call the Infinite_Loop function
+                BL      Loop                              ; call the Loop function
 
 Unlock_Flash
-                PUSH    {R1-R12, LR}                      ; save register state
                 LDR     R0, =0x40023C04                   ; load address of the FLASH_KEYR register
                 LDR     R1, =0x45670123                   ; load value inside FLASH_KEYR register
                 LDR     R2, =0xCDEF89AB                   ; load value inside FLASH_KEYR register
                 STR     R1, [R0]                          ; store the value into the FLASH_KEYR register
                 STR     R2, [R0]                          ; store the value into the FLASH_KEYR register
-                POP     {R1-R12, LR}                      ; repopulate register state
                 BX      LR                                ; return to caller
 
 Erase_Sector_5_Flash
-                PUSH    {R1-R12, LR}                      ; save register state
                 LDR     R0, =0x40023C10                   ; load address of the FLASH_CR register
                 LDR     R1, [R0]                          ; load value inside FLASH_CR register
                 ORR     R1, #1<<16                        ; set the STRT bit
@@ -198,45 +199,36 @@ Erase_Sector_5_Flash
                 ORR     R1, #1<<3                         ; set the SNB bit, sector 5
                 ORR     R1, #1<<1                         ; set the SER bit
                 STR     R1, [R0]                          ; store value into the FLASH_CR register
-                POP     {R1-R12, LR}                      ; repopulate register state
                 BX      LR                                ; return to caller
  
 Verify_FLASH_SR_BSY_Bit_Cleared
-                PUSH    {R1-R12, LR}                      ; save register state
                 LDR     R0, =0x40023C0C                   ; load address of the FLASH_SR register
                 LDR     R1, [R0]                          ; load value inside FLASH_SR register
                 TST     R1, #1<<16                        ; test the BSY bit
                 BNE     Verify_FLASH_SR_BSY_Bit_Cleared   ; branch back if BSY bit is still 1
-                POP     {R1-R12, LR}                      ; repopulate register state
                 BX      LR                                ; return to caller
 
 Enable_Write_To_Flash
-                PUSH    {R1-R12, LR}                      ; save register state
                 LDR     R0, =0x40023C10                   ; load address of the FLASH_CR register
                 LDR     R1, [R0]                          ; load value inside FLASH_CR register
                 ORR     R1, #1<<0                         ; set the PG bit
                 ORR     R1, #1<<9                         ; set the PSIZE bit, program x32
                 AND     R1, #~(0<<8)                      ; clear the PSIZE bit, program x32
                 STR     R1, [R0]                          ; store value into the FLASH_CR register
-                POP     {R1-R12, LR}                      ; repopulate register state
                 BX      LR                                ; return to caller
 
 Write_To_Flash
-                PUSH    {R1-R12, LR}                      ; save register state
                 STR     R1, [R0]                          ; store data into the sector 5 address
-                POP     {R1-R12, LR}                      ; repopulate register state
                 BX      LR                                ; return to caller
 
 Lock_Flash
-                PUSH    {R1-R12, LR}                      ; save register state
                 LDR     R0, =0x40023C10                   ; load address of the FLASH_CR register
                 LDR     R1, [R0]                          ; load value inside FLASH_CR register
                 MOV     R1, #0x80000000                   ; set the LOCK bit and clear everything else
-                POP     {R1-R12, LR}                      ; repopulate register state
                 BX      LR                                ; return to caller
 
-Infinite_Loop
-                B       .
+Loop
+                B       Loop
 
                 ENDP 
                 ALIGN
