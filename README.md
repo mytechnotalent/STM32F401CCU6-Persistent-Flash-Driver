@@ -177,21 +177,14 @@ Reset_Handler   PROC
 
 __start
                 BL      Unlock_Flash                      ; call the Unlock_Flash function
-
                 BL      Erase_Sector_5_Flash              ; call the Erase_Sector_5_Flash function
-
                 BL      Verify_FLASH_SR_BSY_Bit_Cleared   ; call the Verify_FLASH_SR_BSY_Bit_Cleared function
-
                 BL      Enable_Write_To_Flash             ; call the Enable_Write_To_Flash function
-
                 LDR     R0, =0x0803FFFC                   ; address to write to within sector 5 flash
                 LDR     R1, =0xDEADBEEF                   ; data to write into the sector 5 address
                 BL      Write_To_Flash                    ; call the Write_To_Flash function
-
                 BL      Verify_FLASH_SR_BSY_Bit_Cleared   ; call the Verify_FLASH_SR_BSY_Bit_Cleared function
-
-                BL      Lock_Flash                        ; call the Lock_Flash function
-                    
+                BL      Lock_Flash                        ; call the Lock_Flash function  
                 BL      Loop                              ; call the Loop function
 
 Unlock_Flash
